@@ -1,3 +1,3 @@
 pub trait Problem {
-    fn solve();
+    fn solve(&self);
 }
