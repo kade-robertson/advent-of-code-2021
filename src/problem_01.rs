@@ -4,6 +4,10 @@ use crate::util::read_file;
 pub struct Problem01 {}
 
 impl Problem01 {
+    pub fn new() -> Problem01 {
+        Problem01 {}
+    }
+
     fn solve_actual(&self, measurements: &Vec<i64>) -> i64 {
         let mut increases = 0;
         let mut window = measurements.windows(2);
@@ -28,10 +32,6 @@ impl Problem01 {
 }
 
 impl Problem for Problem01 {
-    fn new() -> Problem01 {
-        Problem01 {}
-    }
-
     fn solve(&self) {
         let input = match read_file("./inputs/problem_01.txt") {
             Some(data) => data,

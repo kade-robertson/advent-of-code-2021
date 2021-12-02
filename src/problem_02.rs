@@ -9,6 +9,10 @@ struct Command<'a> {
 pub struct Problem02 {}
 
 impl Problem02 {
+    pub fn new() -> Problem02 {
+        Problem02 {}
+    }
+
     fn solve_actual(&self, commands: &Vec<Command>) -> i64 {
         let mut depth: i64 = 0;
         let mut distance: i64 = 0;
@@ -39,10 +43,6 @@ impl Problem02 {
 }
 
 impl Problem for Problem02 {
-    fn new() -> Problem02 {
-        Problem02 {}
-    }
-
     fn solve(&self) {
         let input = match read_file("./inputs/problem_02.txt") {
             Some(data) => data,

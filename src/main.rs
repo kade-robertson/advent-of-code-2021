@@ -7,9 +7,9 @@ mod util;
 fn main() {
     println!("~ Advent of Code 2021 ~");
 
-    let problem01 = problem_01::Problem01::new();
-    problem01.solve();
-
-    let problem02 = problem_02::Problem02::new();
-    problem02.solve();
+    let problems: Vec<Box<dyn Problem>> = vec![
+        Box::new(problem_01::Problem01::new()),
+        Box::new(problem_02::Problem02::new()),
+    ];
+    problems.iter().for_each(|problem| problem.solve());
 }
