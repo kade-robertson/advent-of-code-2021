@@ -23,7 +23,8 @@ jobs:
       - name: Set outputs
         id: vars
         run: |
-          echo "::set-output name=version::$(date -I)"
+          echo "::set-output name=version::$(date +%Y.%m.%d)"
+          echo "::set-output name=githash::$(git rev-parse --short HEAD)"
       - name: Build
         run: |
           cargo install --force cargo-strip
@@ -45,5 +46,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: artifacts/*
-          tag_name: "v${{ steps.vars.outputs.version }}"
+          tag_name: "v${{ steps.vars.outputs.version }}-${{ steps.vars.outputs.githash }}"
           generate_release_notes: true
