@@ -1,5 +1,7 @@
+#[cfg(debug_assertions)]
 use std::{fs::File, io::Read};
 
+#[cfg(debug_assertions)]
 pub fn read_file(path: &str) -> Option<String> {
     let file: Option<File> = match File::open(path) {
         Ok(valid_file) => Some(valid_file),
