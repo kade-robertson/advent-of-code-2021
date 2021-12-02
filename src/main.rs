@@ -2,7 +2,7 @@ use crate::problem::Problem;
 
 mod problem;
 mod problem_01;
-
+mod util;
 fn main() {
     println!("~ Advent of Code 2021 ~");
 

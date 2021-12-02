@@ -1,14 +1,9 @@
-use std::{fs::File, io::Read};
-
 use crate::problem::Problem;
+use crate::util::read_file;
 
 pub struct Problem01 {}
 
 impl Problem01 {
-    pub fn new() -> Problem01 {
-        Problem01 {}
-    }
-
     fn solve_actual(&self, measurements: &Vec<i64>) -> i64 {
         let mut increases = 0;
         let mut window = measurements.windows(2);
@@ -33,24 +28,18 @@ impl Problem01 {
 }
 
 impl Problem for Problem01 {
-    fn solve(&self) {
-        let mut file: File = match File::open("./inputs/problem_01.txt") {
-            Ok(valid_file) => valid_file,
-            Err(_e) => {
-                println!("Day 1 Answer: Could not open input :(");
-                return;
-            }
-        };
+    fn new() -> Problem01 {
+        Problem01 {}
+    }
 
-        let mut input = String::new();
-        match file.read_to_string(&mut input) {
-            Ok(_valid) => {}
-            Err(_e) => {
+    fn solve(&self) {
+        let input = match read_file("./inputs/problem_01.txt") {
+            Some(data) => data,
+            None => {
                 println!("Day 1 Answer: Could not read input :(");
                 return;
             }
-        }
-
+        };
         let mut failed_to_parse = false;
         let measurements: Vec<i64> = input
             .lines()
