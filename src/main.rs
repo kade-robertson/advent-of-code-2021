@@ -1,9 +1,12 @@
 use crate::problem::Problem;
 
+#[macro_use]
+mod macros;
 mod problem;
 mod problem_01;
 mod problem_02;
 mod util;
+
 fn main() {
     println!("~ Advent of Code 2021 ~");
 

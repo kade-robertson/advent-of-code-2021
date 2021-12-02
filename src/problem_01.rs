@@ -1,8 +1,5 @@
 use crate::problem::Problem;
 
-#[cfg(debug_assertions)]
-use crate::util::read_file;
-
 pub struct Problem01 {}
 
 impl Problem01 {
@@ -35,17 +32,7 @@ impl Problem01 {
 
 impl Problem for Problem01 {
     fn solve(&self) {
-        #[cfg(debug_assertions)]
-        let input = match read_file("./inputs/problem_01.txt") {
-            Some(data) => data,
-            None => {
-                println!("Day 1 Answer: Could not read input :(");
-                return;
-            }
-        };
-
-        #[cfg(not(debug_assertions))]
-        let input = include_str!("../inputs/problem_01.txt").to_string();
+        let input = get_input!("./inputs/problem_01.txt");
 
         let mut failed_to_parse = false;
         let measurements: Vec<i64> = input
