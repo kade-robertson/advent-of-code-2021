@@ -1,3 +1,5 @@
+use std::str;
+
 use crate::problem::Problem;
 
 pub struct Problem03 {}
@@ -45,6 +47,67 @@ impl Problem03 {
         }
         return gamma_rate * self.epsilon_rate(bits, gamma_rate);
     }
+
+    fn calculate_rating(&self, values: &Vec<&[u8]>, invert: bool, index: usize) -> i64 {
+        if values.len() == 1 {
+            return i64::from_str_radix(str::from_utf8(values[0]).unwrap(), 2).unwrap();
+        }
+        let mut values_to_keep: Vec<&[u8]> = Vec::new();
+        let mut ones_count = 0;
+        values.iter().for_each(|num| {
+            if num[index] as char == '1' {
+                ones_count += 1
+            }
+        });
+
+        let halfway = values.len() / 2;
+        let mut invert_bit = '1';
+        let mut normal_bit = '0';
+        if ones_count > halfway || ((ones_count == halfway) && (values.len() % 2 == 0)) {
+            invert_bit = '0';
+            normal_bit = '1';
+        }
+
+        let keep_bit = if invert { invert_bit } else { normal_bit };
+        values.iter().for_each(|num| {
+            if num[index] as char == keep_bit {
+                values_to_keep.push(num);
+            }
+        });
+        return self.calculate_rating(&values_to_keep, invert, index + 1);
+    }
+
+    fn solve_actual_part2(&self, diagnostics: &Vec<&[u8]>) -> i64 {
+        if diagnostics.len() == 0 {
+            return 0;
+        }
+
+        let mut ones_count = 0;
+        let mut oxygen_char = '1';
+        diagnostics.iter().for_each(|num| {
+            if num[0] as char == '1' {
+                ones_count += 1
+            }
+        });
+        if ones_count < (diagnostics.len() / 2) {
+            oxygen_char = '0';
+        }
+
+        let mut oxygen_values: Vec<&[u8]> = Vec::new();
+        let mut scrubber_values: Vec<&[u8]> = Vec::new();
+        diagnostics.iter().for_each(|num| {
+            if num[0] as char == oxygen_char {
+                oxygen_values.push(num)
+            } else {
+                scrubber_values.push(num)
+            }
+        });
+
+        let oxygen_rating = self.calculate_rating(&oxygen_values, false, 1);
+        let scrubber_rating = self.calculate_rating(&scrubber_values, true, 1);
+
+        return oxygen_rating * scrubber_rating;
+    }
 }
 
 impl Problem for Problem03 {
@@ -54,8 +117,10 @@ impl Problem for Problem03 {
         let diagnostics: Vec<&[u8]> = input.lines().map(|line| line.as_bytes()).collect();
 
         let result = self.solve_actual(&diagnostics);
+        let result_part2 = self.solve_actual_part2(&diagnostics);
         println!("Day 2 Answer:");
         println!(" - Part 1: {}", result);
+        println!(" - Part 2: {}", result_part2);
     }
 }
 
@@ -81,5 +146,25 @@ mod tests {
             "01010".as_bytes(),
         ];
         assert_eq!(problem.solve_actual(&diagnostics), 198);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example() {
+        let problem = Problem03::new();
+        let diagnostics = vec![
+            "00100".as_bytes(),
+            "11110".as_bytes(),
+            "10110".as_bytes(),
+            "10111".as_bytes(),
+            "10101".as_bytes(),
+            "01111".as_bytes(),
+            "00111".as_bytes(),
+            "11100".as_bytes(),
+            "10000".as_bytes(),
+            "11001".as_bytes(),
+            "00010".as_bytes(),
+            "01010".as_bytes(),
+        ];
+        assert_eq!(problem.solve_actual_part2(&diagnostics), 230);
     }
 }
