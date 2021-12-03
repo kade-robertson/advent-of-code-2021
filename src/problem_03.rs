@@ -1,0 +1,77 @@
+use crate::problem::Problem;
+
+pub struct Problem03 {}
+
+impl Problem03 {
+    pub fn new() -> Problem03 {
+        Problem03 {}
+    }
+
+    // Epsilon rate is just the ones complement of the gamma rate. We can
+    // invert by taking the max integer value for the number of bits in the
+    // input and subtracting the gamma rate.
+    // ex from the problem:
+    // - gamma rate is 10110
+    // - max integer value with the same number of bits is 11111
+    // - 11111 - 10110 = 01001
+    fn epsilon_rate(&self, size: usize, num: i64) -> i64 {
+        let max_value = 2i64.pow(size as u32) - 1;
+        return max_value - num;
+    }
+
+    fn solve_actual(&self, diagnostics: &Vec<&[u8]>) -> i64 {
+        if diagnostics.len() == 0 {
+            return 0;
+        }
+
+        let bits = diagnostics[0].len();
+        let mut gamma_rate: i64 = 0;
+        let mut index = 0;
+        while index < bits {
+            let mut ones_count = 0;
+            diagnostics.iter().for_each(|num| {
+                if num[index] as char == '1' {
+                    ones_count += 1
+                }
+            });
+            // Assumes we always have a least and most common bit, i.e. there
+            // is never an equal amount of ones and zeroes.
+            if ones_count > (diagnostics.len() / 2) {
+                gamma_rate = (gamma_rate << 1) + 1;
+            } else {
+                gamma_rate = gamma_rate << 1;
+            }
+            index += 1;
+        }
+        return gamma_rate * self.epsilon_rate(bits, gamma_rate);
+    }
+}
+
+impl Problem for Problem03 {
+    fn solve(&self) {}
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_solve_actual_from_example() {
+        let problem = Problem03::new();
+        let diagnostics = vec![
+            "00100".as_bytes(),
+            "11110".as_bytes(),
+            "10110".as_bytes(),
+            "10111".as_bytes(),
+            "10101".as_bytes(),
+            "01111".as_bytes(),
+            "00111".as_bytes(),
+            "11100".as_bytes(),
+            "10000".as_bytes(),
+            "11001".as_bytes(),
+            "00010".as_bytes(),
+            "01010".as_bytes(),
+        ];
+        assert_eq!(problem.solve_actual(&diagnostics), 198);
+    }
+}
