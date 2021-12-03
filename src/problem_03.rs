@@ -48,7 +48,15 @@ impl Problem03 {
 }
 
 impl Problem for Problem03 {
-    fn solve(&self) {}
+    fn solve(&self) {
+        let input = get_input!("./inputs/problem_03.txt");
+
+        let diagnostics: Vec<&[u8]> = input.lines().map(|line| line.as_bytes()).collect();
+
+        let result = self.solve_actual(&diagnostics);
+        println!("Day 2 Answer:");
+        println!(" - Part 1: {}", result);
+    }
 }
 
 #[cfg(test)]
