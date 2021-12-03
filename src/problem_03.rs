@@ -82,29 +82,8 @@ impl Problem03 {
             return 0;
         }
 
-        let mut ones_count = 0;
-        let mut oxygen_char = '1';
-        diagnostics.iter().for_each(|num| {
-            if num[0] as char == '1' {
-                ones_count += 1
-            }
-        });
-        if ones_count < (diagnostics.len() / 2) {
-            oxygen_char = '0';
-        }
-
-        let mut oxygen_values: Vec<&[u8]> = Vec::new();
-        let mut scrubber_values: Vec<&[u8]> = Vec::new();
-        diagnostics.iter().for_each(|num| {
-            if num[0] as char == oxygen_char {
-                oxygen_values.push(num)
-            } else {
-                scrubber_values.push(num)
-            }
-        });
-
-        let oxygen_rating = self.calculate_rating(&oxygen_values, false, 1);
-        let scrubber_rating = self.calculate_rating(&scrubber_values, true, 1);
+        let oxygen_rating = self.calculate_rating(&diagnostics, false, 0);
+        let scrubber_rating = self.calculate_rating(&diagnostics, true, 0);
 
         return oxygen_rating * scrubber_rating;
     }
