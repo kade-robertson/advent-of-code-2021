@@ -97,7 +97,7 @@ impl Problem for Problem03 {
 
         let result = self.solve_actual(&diagnostics);
         let result_part2 = self.solve_actual_part2(&diagnostics);
-        println!("Day 2 Answer:");
+        println!("Day 3 Answer:");
         println!(" - Part 1: {}", result);
         println!(" - Part 2: {}", result_part2);
     }
