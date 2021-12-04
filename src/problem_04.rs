@@ -183,7 +183,7 @@ mod tests {
     #[test]
     fn test_solve_actual_from_example() {
         let problem = Problem04::new();
-        let input = get_input!("./inputs/problem_04_part1_example.txt");
+        let input = get_input!("./inputs/problem_04_example.txt");
         let (bingo_numbers, mut bingo_boards) = problem.parse(input);
         assert_eq!(
             problem.solve_actual(&bingo_numbers, &mut bingo_boards),
@@ -192,13 +192,35 @@ mod tests {
     }
 
     #[test]
+    fn test_solve_actual_from_input() {
+        let problem = Problem04::new();
+        let input = get_input!("./inputs/problem_04.txt");
+        let (bingo_numbers, mut bingo_boards) = problem.parse(input);
+        assert_eq!(
+            problem.solve_actual(&bingo_numbers, &mut bingo_boards),
+            58412
+        );
+    }
+
+    #[test]
     fn test_solve_actual_part2_from_example() {
         let problem = Problem04::new();
-        let input = get_input!("./inputs/problem_04_part1_example.txt");
+        let input = get_input!("./inputs/problem_04_example.txt");
         let (bingo_numbers, mut bingo_boards) = problem.parse(input);
         assert_eq!(
             problem.solve_actual_part2(&bingo_numbers, &mut bingo_boards),
             1924
+        );
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem04::new();
+        let input = get_input!("./inputs/problem_04.txt");
+        let (bingo_numbers, mut bingo_boards) = problem.parse(input);
+        assert_eq!(
+            problem.solve_actual_part2(&bingo_numbers, &mut bingo_boards),
+            10030
         );
     }
 }
