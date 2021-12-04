@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::problem::Problem;
 
@@ -77,6 +77,16 @@ impl BingoBoard {
     }
 }
 
+impl Clone for BingoBoard {
+    fn clone(&self) -> BingoBoard {
+        BingoBoard {
+            actual_board: self.actual_board.clone(),
+            marked_board: self.marked_board.clone(),
+            board_size: self.board_size.clone(),
+        }
+    }
+}
+
 pub struct Problem04 {}
 
 impl Problem04 {
@@ -126,6 +136,29 @@ impl Problem04 {
         }
         return 0;
     }
+
+    fn solve_actual_part2(
+        &self,
+        bingo_numbers: &Vec<i64>,
+        bingo_boards: &mut Vec<BingoBoard>,
+    ) -> i64 {
+        let mut last_win = 0;
+        let mut solved_boards: HashSet<usize> = HashSet::new();
+        for number in bingo_numbers {
+            for (board_index, board) in (&mut *bingo_boards).iter_mut().enumerate() {
+                if solved_boards.contains(&board_index) {
+                    continue;
+                }
+
+                board.mark_value(number);
+                if board.solved() {
+                    last_win = number * board.unmarked_total();
+                    solved_boards.insert(board_index);
+                }
+            }
+        }
+        return last_win;
+    }
 }
 
 impl Problem for Problem04 {
@@ -133,10 +166,13 @@ impl Problem for Problem04 {
         let input = get_input!("./inputs/problem_04.txt");
 
         let (bingo_numbers, mut bingo_boards) = self.parse(input);
+        let mut bingo_boards_part2 = bingo_boards.clone();
 
         let result = self.solve_actual(&bingo_numbers, &mut bingo_boards);
+        let result_part2 = self.solve_actual_part2(&bingo_numbers, &mut bingo_boards_part2);
         println!("Day 4 Answer:");
         println!(" - Part 1: {:?}", result);
+        println!(" - Part 2: {:?}", result_part2);
     }
 }
 
@@ -152,6 +188,17 @@ mod tests {
         assert_eq!(
             problem.solve_actual(&bingo_numbers, &mut bingo_boards),
             4512
+        );
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example() {
+        let problem = Problem04::new();
+        let input = get_input!("./inputs/problem_04_part1_example.txt");
+        let (bingo_numbers, mut bingo_boards) = problem.parse(input);
+        assert_eq!(
+            problem.solve_actual_part2(&bingo_numbers, &mut bingo_boards),
+            1924
         );
     }
 }
