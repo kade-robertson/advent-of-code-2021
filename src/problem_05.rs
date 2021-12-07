@@ -19,23 +19,31 @@ pub struct Line {
 }
 
 impl Line {
-    pub fn get_points(&self) -> Vec<Point> {
+    pub fn get_points(&self, include_diagonals: bool) -> Vec<Point> {
         let mut covered_points: Vec<Point> = Vec::new();
+
+        let x_range: Box<dyn Iterator<Item = i64>> = if self.end.x > self.start.x {
+            Box::new(self.start.x..=self.end.x)
+        } else {
+            Box::new((self.end.x..=self.start.x).rev())
+        };
+
+        let y_range: Box<dyn Iterator<Item = i64>> = if self.end.y > self.start.y {
+            Box::new(self.start.y..=self.end.y)
+        } else {
+            Box::new((self.end.y..=self.start.y).rev())
+        };
+
         if self.start.x == self.end.x {
-            let range = if self.start.y > self.end.y {
-                self.end.y..(self.start.y + 1)
-            } else {
-                self.start.y..(self.end.y + 1)
-            };
-            range.for_each(|y| covered_points.push(Point { x: self.start.x, y }));
+            y_range.for_each(|y| covered_points.push(Point { x: self.start.x, y }));
         } else if self.start.y == self.end.y {
-            let range = if self.start.x > self.end.x {
-                self.end.x..(self.start.x + 1)
-            } else {
-                self.start.x..(self.end.x + 1)
-            };
-            range.for_each(|x| covered_points.push(Point { x, y: self.start.y }));
+            x_range.for_each(|x| covered_points.push(Point { x, y: self.start.y }));
+        } else if include_diagonals {
+            x_range
+                .zip(y_range)
+                .for_each(|(x, y)| covered_points.push(Point { x, y }));
         }
+
         return covered_points;
     }
 }
@@ -73,11 +81,11 @@ impl Problem05 {
         return submarine_lines;
     }
 
-    fn solve_actual(&self, submarine_lines: &Vec<Line>) -> i64 {
+    fn solve_actual(&self, submarine_lines: &Vec<Line>, include_diagonals: bool) -> i64 {
         let mut seen_once: HashSet<(i64, i64)> = HashSet::new();
         let mut seen_at_least_twice: HashSet<(i64, i64)> = HashSet::new();
         submarine_lines.iter().for_each(|line| {
-            for point in line.get_points() {
+            for point in line.get_points(include_diagonals) {
                 let coords = point.as_tuple();
                 if seen_once.contains(&coords) {
                     seen_at_least_twice.insert(coords);
@@ -88,6 +96,10 @@ impl Problem05 {
         });
         return seen_at_least_twice.len() as i64;
     }
+
+    fn solve_actual_part2(&self, submarine_lines: &Vec<Line>) -> i64 {
+        self.solve_actual(submarine_lines, true)
+    }
 }
 
 impl Problem for Problem05 {
@@ -96,9 +108,11 @@ impl Problem for Problem05 {
 
         let submarine_lines = self.parse(input);
 
-        let result = self.solve_actual(&submarine_lines);
+        let result = self.solve_actual(&submarine_lines, false);
+        let result_part2 = self.solve_actual_part2(&submarine_lines);
         println!("Day 5 Answer:");
         println!(" - Part 1: {:?}", result);
+        println!(" - Part 2: {:?}", result_part2);
     }
 }
 
@@ -111,7 +125,7 @@ mod tests {
         let problem = Problem05::new();
         let input = get_input!("./inputs/problem_05_example.txt");
         let submarine_lines = problem.parse(input);
-        assert_eq!(problem.solve_actual(&submarine_lines), 5);
+        assert_eq!(problem.solve_actual(&submarine_lines, false), 5);
     }
 
     #[test]
@@ -119,6 +133,22 @@ mod tests {
         let problem = Problem05::new();
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = problem.parse(input);
-        assert_eq!(problem.solve_actual(&submarine_lines), 4826);
+        assert_eq!(problem.solve_actual(&submarine_lines, false), 4826);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example() {
+        let problem = Problem05::new();
+        let input = get_input!("./inputs/problem_05_example.txt");
+        let submarine_lines = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&submarine_lines), 12);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem05::new();
+        let input = get_input!("./inputs/problem_05.txt");
+        let submarine_lines = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&submarine_lines), 16793);
     }
 }
