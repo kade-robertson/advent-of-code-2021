@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use crate::problem::Problem;
 
@@ -7,9 +7,37 @@ pub struct Point {
     y: i64,
 }
 
+impl Point {
+    pub fn as_tuple(&self) -> (i64, i64) {
+        (self.x, self.y)
+    }
+}
+
 pub struct Line {
     start: Point,
     end: Point,
+}
+
+impl Line {
+    pub fn get_points(&self) -> Vec<Point> {
+        let mut covered_points: Vec<Point> = Vec::new();
+        if self.start.x == self.end.x {
+            let range = if self.start.y > self.end.y {
+                self.end.y..(self.start.y + 1)
+            } else {
+                self.start.y..(self.end.y + 1)
+            };
+            range.for_each(|y| covered_points.push(Point { x: self.start.x, y }));
+        } else if self.start.y == self.end.y {
+            let range = if self.start.x > self.end.x {
+                self.end.x..(self.start.x + 1)
+            } else {
+                self.start.x..(self.end.x + 1)
+            };
+            range.for_each(|x| covered_points.push(Point { x, y: self.start.y }));
+        }
+        return covered_points;
+    }
 }
 
 pub struct Problem05 {}
@@ -46,44 +74,19 @@ impl Problem05 {
     }
 
     fn solve_actual(&self, submarine_lines: &Vec<Line>) -> i64 {
-        let mut seen_coords: HashMap<(i64, i64), i64> = HashMap::new();
-        let mut seen_at_least_two: HashSet<(i64, i64)> = HashSet::new();
+        let mut seen_once: HashSet<(i64, i64)> = HashSet::new();
+        let mut seen_at_least_twice: HashSet<(i64, i64)> = HashSet::new();
         submarine_lines.iter().for_each(|line| {
-            if line.start.x == line.end.x {
-                let range = if line.start.y > line.end.y {
-                    line.end.y..(line.start.y + 1)
+            for point in line.get_points() {
+                let coords = point.as_tuple();
+                if seen_once.contains(&coords) {
+                    seen_at_least_twice.insert(coords);
                 } else {
-                    line.start.y..(line.end.y + 1)
-                };
-                for y in range {
-                    if seen_coords.contains_key(&(line.start.x, y)) {
-                        (*seen_coords.get_mut(&(line.start.x, y)).unwrap()) += 1;
-                        if seen_coords[&(line.start.x, y)] >= 2 {
-                            seen_at_least_two.insert((line.start.x, y));
-                        }
-                    } else {
-                        seen_coords.insert((line.start.x, y), 1);
-                    }
-                }
-            } else if line.start.y == line.end.y {
-                let range = if line.start.x > line.end.x {
-                    line.end.x..(line.start.x + 1)
-                } else {
-                    line.start.x..(line.end.x + 1)
-                };
-                for x in range {
-                    if seen_coords.contains_key(&(x, line.start.y)) {
-                        (*seen_coords.get_mut(&(x, line.start.y)).unwrap()) += 1;
-                        if seen_coords[&(x, line.start.y)] >= 2 {
-                            seen_at_least_two.insert((x, line.start.y));
-                        }
-                    } else {
-                        seen_coords.insert((x, line.start.y), 1);
-                    }
+                    seen_once.insert(coords);
                 }
             }
         });
-        return seen_at_least_two.len() as i64;
+        return seen_at_least_twice.len() as i64;
     }
 }
 
