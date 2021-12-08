@@ -5,3 +5,11 @@ version = 3
 [[package]]
 name = "advent-of-code-2021"
 version = "0.1.0"
+dependencies = [
+ "core_simd",
+]
+
+[[package]]
+name = "core_simd"
+version = "0.1.0"
+source = "git+https://github.com/rust-lang/portable-simd#81484a399c96c69adeef352be0e7823b39ce6e7e"
