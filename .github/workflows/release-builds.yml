@@ -23,7 +23,7 @@ jobs:
       - name: Set outputs
         id: vars
         run: |
-          echo "::set-output name=version::$(date +%Y.%m.%d-%H.%M)"
+          echo "::set-output name=version::$(TZ='America/Toronto' date +%Y.%m.%d-%H.%M)"
           echo "::set-output name=githash::$(git rev-parse --short HEAD)"
       - name: Build
         run: |
