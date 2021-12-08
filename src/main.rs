@@ -13,6 +13,7 @@ mod problem_03;
 mod problem_04;
 mod problem_05;
 mod problem_06;
+mod problem_07;
 mod util;
 
 fn main() {
@@ -25,6 +26,7 @@ fn main() {
         Box::new(problem_04::Problem04::new()),
         Box::new(problem_05::Problem05::new()),
         Box::new(problem_06::Problem06::new()),
+        Box::new(problem_07::Problem07::new()),
     ];
     problems.iter().for_each(|problem| {
         println!("{}", problem.name());
