@@ -31,16 +31,17 @@ impl Problem07 {
         let mut positions = crab_submarines.to_owned();
         positions.sort();
 
-        let mut best_score = i64::MAX;
-        for pos in positions[0]..=positions[positions.len() - 1] {
-            let score = positions
-                .iter()
-                .fold(0, |acc, crab| acc + self.triangular((crab - pos).abs()));
-            if score < best_score {
-                best_score = score;
-            }
-        }
-        return best_score;
+        let ideal_position =
+            positions.iter().fold(0, |acc, crab| acc + crab) as i64 / positions.len() as i64;
+
+        return i64::min(
+            positions.iter().fold(0, |acc, crab| {
+                acc + self.triangular((crab - ideal_position).abs())
+            }),
+            positions.iter().fold(0, |acc, crab| {
+                acc + self.triangular((crab - ideal_position - 1).abs())
+            }),
+        );
     }
 }
 
