@@ -9,6 +9,13 @@ impl Problem03 {
         Problem03 {}
     }
 
+    fn parse(&self, input: String) -> Vec<Vec<u8>> {
+        input
+            .lines()
+            .map(|line| line.as_bytes().to_owned())
+            .collect()
+    }
+
     // Epsilon rate is just the ones complement of the gamma rate. We can
     // invert by taking the max integer value for the number of bits in the
     // input and subtracting the gamma rate.
@@ -21,7 +28,7 @@ impl Problem03 {
         return max_value - num;
     }
 
-    fn solve_actual(&self, diagnostics: &Vec<&[u8]>) -> i64 {
+    fn solve_actual(&self, diagnostics: &Vec<Vec<u8>>) -> i64 {
         if diagnostics.len() == 0 {
             return 0;
         }
@@ -48,11 +55,11 @@ impl Problem03 {
         return gamma_rate * self.epsilon_rate(bits, gamma_rate);
     }
 
-    fn calculate_rating(&self, values: &Vec<&[u8]>, invert: bool, index: usize) -> i64 {
+    fn calculate_rating(&self, values: &Vec<Vec<u8>>, invert: bool, index: usize) -> i64 {
         if values.len() == 1 {
-            return i64::from_str_radix(str::from_utf8(values[0]).unwrap(), 2).unwrap();
+            return i64::from_str_radix(str::from_utf8(&values[0]).unwrap(), 2).unwrap();
         }
-        let mut values_to_keep: Vec<&[u8]> = Vec::new();
+        let mut values_to_keep: Vec<Vec<u8>> = Vec::new();
         let mut ones_count = 0;
         values.iter().for_each(|num| {
             if num[index] as char == '1' {
@@ -71,13 +78,13 @@ impl Problem03 {
         let keep_bit = if invert { invert_bit } else { normal_bit };
         values.iter().for_each(|num| {
             if num[index] as char == keep_bit {
-                values_to_keep.push(num);
+                values_to_keep.push(num.to_vec());
             }
         });
         return self.calculate_rating(&values_to_keep, invert, index + 1);
     }
 
-    fn solve_actual_part2(&self, diagnostics: &Vec<&[u8]>) -> i64 {
+    fn solve_actual_part2(&self, diagnostics: &Vec<Vec<u8>>) -> i64 {
         if diagnostics.len() == 0 {
             return 0;
         }
@@ -90,16 +97,20 @@ impl Problem03 {
 }
 
 impl Problem for Problem03 {
-    fn solve(&self) {
+    fn name(&self) -> &str {
+        "Day 3: Binary Diagnostic"
+    }
+
+    fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_03.txt");
+        let diagnostics: Vec<Vec<u8>> = self.parse(input);
+        return self.solve_actual(&diagnostics);
+    }
 
-        let diagnostics: Vec<&[u8]> = input.lines().map(|line| line.as_bytes()).collect();
-
-        let result = self.solve_actual(&diagnostics);
-        let result_part2 = self.solve_actual_part2(&diagnostics);
-        println!("Day 3 Answer:");
-        println!(" - Part 1: {}", result);
-        println!(" - Part 2: {}", result_part2);
+    fn solve_part2(&self) -> i64 {
+        let input = get_input!("./inputs/problem_03.txt");
+        let diagnostics: Vec<Vec<u8>> = self.parse(input);
+        return self.solve_actual_part2(&diagnostics);
     }
 }
 
@@ -110,40 +121,16 @@ mod tests {
     #[test]
     fn test_solve_actual_from_example() {
         let problem = Problem03::new();
-        let diagnostics = vec![
-            "00100".as_bytes(),
-            "11110".as_bytes(),
-            "10110".as_bytes(),
-            "10111".as_bytes(),
-            "10101".as_bytes(),
-            "01111".as_bytes(),
-            "00111".as_bytes(),
-            "11100".as_bytes(),
-            "10000".as_bytes(),
-            "11001".as_bytes(),
-            "00010".as_bytes(),
-            "01010".as_bytes(),
-        ];
+        let input = get_input!("./inputs/problem_03_example.txt");
+        let diagnostics: Vec<Vec<u8>> = problem.parse(input);
         assert_eq!(problem.solve_actual(&diagnostics), 198);
     }
 
     #[test]
     fn test_solve_actual_part2_from_example() {
         let problem = Problem03::new();
-        let diagnostics = vec![
-            "00100".as_bytes(),
-            "11110".as_bytes(),
-            "10110".as_bytes(),
-            "10111".as_bytes(),
-            "10101".as_bytes(),
-            "01111".as_bytes(),
-            "00111".as_bytes(),
-            "11100".as_bytes(),
-            "10000".as_bytes(),
-            "11001".as_bytes(),
-            "00010".as_bytes(),
-            "01010".as_bytes(),
-        ];
+        let input = get_input!("./inputs/problem_03_example.txt");
+        let diagnostics: Vec<Vec<u8>> = problem.parse(input);
         assert_eq!(problem.solve_actual_part2(&diagnostics), 230);
     }
 }

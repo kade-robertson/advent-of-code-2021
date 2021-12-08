@@ -162,17 +162,20 @@ impl Problem04 {
 }
 
 impl Problem for Problem04 {
-    fn solve(&self) {
+    fn name(&self) -> &str {
+        "Day 4: Giant Squid"
+    }
+
+    fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_04.txt");
-
         let (bingo_numbers, mut bingo_boards) = self.parse(input);
-        let mut bingo_boards_part2 = bingo_boards.clone();
+        return self.solve_actual(&bingo_numbers, &mut bingo_boards);
+    }
 
-        let result = self.solve_actual(&bingo_numbers, &mut bingo_boards);
-        let result_part2 = self.solve_actual_part2(&bingo_numbers, &mut bingo_boards_part2);
-        println!("Day 4 Answer:");
-        println!(" - Part 1: {:?}", result);
-        println!(" - Part 2: {:?}", result_part2);
+    fn solve_part2(&self) -> i64 {
+        let input = get_input!("./inputs/problem_04.txt");
+        let (bingo_numbers, mut bingo_boards) = self.parse(input);
+        return self.solve_actual_part2(&bingo_numbers, &mut bingo_boards);
     }
 }
 

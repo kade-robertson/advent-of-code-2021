@@ -7,6 +7,13 @@ impl Problem01 {
         Problem01 {}
     }
 
+    fn parse(&self, input: String) -> Vec<i64> {
+        input
+            .lines()
+            .map(|line| line.parse::<i64>().unwrap())
+            .collect()
+    }
+
     fn solve_actual(&self, measurements: &Vec<i64>) -> i64 {
         let mut increases = 0;
         let mut window = measurements.windows(2);
@@ -31,30 +38,20 @@ impl Problem01 {
 }
 
 impl Problem for Problem01 {
-    fn solve(&self) {
+    fn name(&self) -> &str {
+        "Day 1: Sonar Sweep"
+    }
+
+    fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_01.txt");
+        let measurements = self.parse(input);
+        return self.solve_actual(&measurements);
+    }
 
-        let mut failed_to_parse = false;
-        let measurements: Vec<i64> = input
-            .lines()
-            .map(|line| match line.parse::<i64>() {
-                Ok(value) => value,
-                Err(_e) => {
-                    failed_to_parse = true;
-                    return -1;
-                }
-            })
-            .collect();
-        if failed_to_parse {
-            println!("Day 1 Answer: Could not parse input :(");
-            return;
-        }
-
-        let result = self.solve_actual(&measurements);
-        let result_part2 = self.solve_actual_part2(&measurements);
-        println!("Day 1 Answer:");
-        println!(" - Part 1: {}", result);
-        println!(" - Part 2: {}", result_part2);
+    fn solve_part2(&self) -> i64 {
+        let input = get_input!("./inputs/problem_01.txt");
+        let measurements = self.parse(input);
+        return self.solve_actual_part2(&measurements);
     }
 }
 

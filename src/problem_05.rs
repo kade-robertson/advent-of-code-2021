@@ -96,23 +96,23 @@ impl Problem05 {
         });
         return seen_at_least_twice.len() as i64;
     }
-
-    fn solve_actual_part2(&self, submarine_lines: &Vec<Line>) -> i64 {
-        self.solve_actual(submarine_lines, true)
-    }
 }
 
 impl Problem for Problem05 {
-    fn solve(&self) {
+    fn name(&self) -> &str {
+        "Day 5: Hydrothermal Venture"
+    }
+
+    fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_05.txt");
-
         let submarine_lines = self.parse(input);
+        return self.solve_actual(&submarine_lines, false);
+    }
 
-        let result = self.solve_actual(&submarine_lines, false);
-        let result_part2 = self.solve_actual_part2(&submarine_lines);
-        println!("Day 5 Answer:");
-        println!(" - Part 1: {:?}", result);
-        println!(" - Part 2: {:?}", result_part2);
+    fn solve_part2(&self) -> i64 {
+        let input = get_input!("./inputs/problem_05.txt");
+        let submarine_lines = self.parse(input);
+        return self.solve_actual(&submarine_lines, true);
     }
 }
 
@@ -141,7 +141,7 @@ mod tests {
         let problem = Problem05::new();
         let input = get_input!("./inputs/problem_05_example.txt");
         let submarine_lines = problem.parse(input);
-        assert_eq!(problem.solve_actual_part2(&submarine_lines), 12);
+        assert_eq!(problem.solve_actual(&submarine_lines, true), 12);
     }
 
     #[test]
@@ -149,6 +149,6 @@ mod tests {
         let problem = Problem05::new();
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = problem.parse(input);
-        assert_eq!(problem.solve_actual_part2(&submarine_lines), 16793);
+        assert_eq!(problem.solve_actual(&submarine_lines, true), 16793);
     }
 }

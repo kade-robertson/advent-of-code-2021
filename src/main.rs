@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use crate::problem::Problem;
 
 #[macro_use]
@@ -20,5 +22,17 @@ fn main() {
         Box::new(problem_04::Problem04::new()),
         Box::new(problem_05::Problem05::new()),
     ];
-    problems.iter().for_each(|problem| problem.solve());
+    problems.iter().for_each(|problem| {
+        println!("{}", problem.name());
+        print!(" - Part 1: ");
+        let part1_start = Instant::now();
+        println!("{} (took {:.2?})", problem.solve(), part1_start.elapsed());
+        print!(" - Part 2: ");
+        let part2_start = Instant::now();
+        println!(
+            "{} (took {:.2?})",
+            problem.solve_part2(),
+            part2_start.elapsed()
+        );
+    });
 }

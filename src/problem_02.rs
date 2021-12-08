@@ -1,7 +1,7 @@
 use crate::problem::Problem;
 
-struct Command<'a> {
-    instruction: &'a str,
+struct Command {
+    instruction: String,
     amount: i64,
 }
 
@@ -12,15 +12,29 @@ impl Problem02 {
         Problem02 {}
     }
 
+    fn parse(&self, input: String) -> Vec<Command> {
+        let mut commands: Vec<Command> = Vec::new();
+        input.lines().for_each(|line| {
+            let split: Vec<&str> = line.split_ascii_whitespace().collect();
+            commands.push(Command {
+                instruction: split[0].to_string(),
+                amount: split[1].parse::<i64>().unwrap(),
+            });
+        });
+        return commands;
+    }
+
     fn solve_actual(&self, commands: &Vec<Command>) -> i64 {
         let mut depth: i64 = 0;
         let mut distance: i64 = 0;
-        commands.iter().for_each(|cmd| match cmd.instruction {
-            "forward" => distance += cmd.amount,
-            "down" => depth += cmd.amount,
-            "up" => depth -= cmd.amount,
-            _ => (),
-        });
+        commands
+            .iter()
+            .for_each(|cmd| match cmd.instruction.as_str() {
+                "forward" => distance += cmd.amount,
+                "down" => depth += cmd.amount,
+                "up" => depth -= cmd.amount,
+                _ => (),
+            });
         return depth * distance;
     }
 
@@ -28,63 +42,36 @@ impl Problem02 {
         let mut depth: i64 = 0;
         let mut distance: i64 = 0;
         let mut aim: i64 = 0;
-        commands.iter().for_each(|cmd| match cmd.instruction {
-            "forward" => {
-                distance += cmd.amount;
-                depth += aim * cmd.amount;
-            }
-            "down" => aim += cmd.amount,
-            "up" => aim -= cmd.amount,
-            _ => (),
-        });
+        commands
+            .iter()
+            .for_each(|cmd| match cmd.instruction.as_str() {
+                "forward" => {
+                    distance += cmd.amount;
+                    depth += aim * cmd.amount;
+                }
+                "down" => aim += cmd.amount,
+                "up" => aim -= cmd.amount,
+                _ => (),
+            });
         return depth * distance;
     }
 }
 
 impl Problem for Problem02 {
-    fn solve(&self) {
+    fn name(&self) -> &str {
+        "Day 2: Dive!"
+    }
+
+    fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_02.txt");
+        let commands: Vec<Command> = self.parse(input);
+        return self.solve_actual(&commands);
+    }
 
-        let mut failed_to_parse = false;
-        let commands: Vec<Command> = input
-            .lines()
-            .map(|line| {
-                let mut split = line.split_ascii_whitespace();
-                Command {
-                    instruction: match split.next() {
-                        Some(value) => value,
-                        None => {
-                            failed_to_parse = true;
-                            ""
-                        }
-                    },
-                    amount: match split.next() {
-                        Some(value) => match value.parse::<i64>() {
-                            Ok(parsed) => parsed,
-                            Err(_e) => {
-                                failed_to_parse = true;
-                                -1
-                            }
-                        },
-                        None => {
-                            failed_to_parse = true;
-                            -1
-                        }
-                    },
-                }
-            })
-            .collect();
-
-        if failed_to_parse {
-            println!("Day 2 Answer: Could not parse input :(");
-            return;
-        }
-
-        let result = self.solve_actual(&commands);
-        let result_part2 = self.solve_actual_part2(&commands);
-        println!("Day 2 Answer:");
-        println!(" - Part 1: {}", result);
-        println!(" - Part 2: {}", result_part2);
+    fn solve_part2(&self) -> i64 {
+        let input = get_input!("./inputs/problem_02.txt");
+        let commands: Vec<Command> = self.parse(input);
+        return self.solve_actual_part2(&commands);
     }
 }
 
@@ -95,32 +82,8 @@ mod tests {
     #[test]
     fn test_solve_actual_from_example() {
         let problem = Problem02::new();
-        let commands: Vec<Command> = vec![
-            Command {
-                instruction: "forward",
-                amount: 5,
-            },
-            Command {
-                instruction: "down",
-                amount: 5,
-            },
-            Command {
-                instruction: "forward",
-                amount: 8,
-            },
-            Command {
-                instruction: "up",
-                amount: 3,
-            },
-            Command {
-                instruction: "down",
-                amount: 8,
-            },
-            Command {
-                instruction: "forward",
-                amount: 2,
-            },
-        ];
+        let input = get_input!("./inputs/problem_02_example.txt");
+        let commands = problem.parse(input);
         assert_eq!(problem.solve_actual(&commands), 150);
     }
 
@@ -129,19 +92,19 @@ mod tests {
         let problem = Problem02::new();
         let commands: Vec<Command> = vec![
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "up",
+                instruction: "up".to_string(),
                 amount: 5,
             },
         ];
@@ -153,19 +116,19 @@ mod tests {
         let problem = Problem02::new();
         let commands: Vec<Command> = vec![
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
         ];
@@ -175,32 +138,8 @@ mod tests {
     #[test]
     fn test_solve_actual_part2_from_example() {
         let problem = Problem02::new();
-        let commands: Vec<Command> = vec![
-            Command {
-                instruction: "forward",
-                amount: 5,
-            },
-            Command {
-                instruction: "down",
-                amount: 5,
-            },
-            Command {
-                instruction: "forward",
-                amount: 8,
-            },
-            Command {
-                instruction: "up",
-                amount: 3,
-            },
-            Command {
-                instruction: "down",
-                amount: 8,
-            },
-            Command {
-                instruction: "forward",
-                amount: 2,
-            },
-        ];
+        let input = get_input!("./inputs/problem_02_example.txt");
+        let commands = problem.parse(input);
         assert_eq!(problem.solve_actual_part2(&commands), 900);
     }
 
@@ -209,19 +148,19 @@ mod tests {
         let problem = Problem02::new();
         let commands: Vec<Command> = vec![
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "up",
+                instruction: "up".to_string(),
                 amount: 5,
             },
         ];
@@ -233,19 +172,19 @@ mod tests {
         let problem = Problem02::new();
         let commands: Vec<Command> = vec![
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 5,
             },
         ];
@@ -262,11 +201,11 @@ mod tests {
         // both are multiplied together for the result.
         let commands: Vec<Command> = vec![
             Command {
-                instruction: "down",
+                instruction: "down".to_string(),
                 amount: 2097151,
             },
             Command {
-                instruction: "forward",
+                instruction: "forward".to_string(),
                 amount: 2097151,
             },
         ];
