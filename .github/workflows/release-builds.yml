@@ -27,6 +27,7 @@ jobs:
           echo "::set-output name=githash::$(git rev-parse --short HEAD)"
       - name: Build
         run: |
+          rustup default nightly
           cargo install --force cargo-strip
           cargo build --release
           cargo strip
