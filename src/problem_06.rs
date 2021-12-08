@@ -50,7 +50,9 @@ impl Problem for Problem06 {
     }
 
     fn solve_part2(&self) -> i64 {
-        return 0;
+        let input = get_input!("./inputs/problem_06.txt");
+        let initial_fish = self.parse(input);
+        return self.solve_actual(&initial_fish, 256);
     }
 }
 
@@ -65,5 +67,29 @@ mod tests {
         let initial_fish = problem.parse(input);
         assert_eq!(problem.solve_actual(&initial_fish, 18), 26);
         assert_eq!(problem.solve_actual(&initial_fish, 80), 5934);
+    }
+
+    #[test]
+    fn test_solve_actual_from_input() {
+        let problem = Problem06::new();
+        let input = get_input!("./inputs/problem_06.txt");
+        let initial_fish = problem.parse(input);
+        assert_eq!(problem.solve_actual(&initial_fish, 80), 350917);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example() {
+        let problem = Problem06::new();
+        let input = get_input!("./inputs/problem_06_example.txt");
+        let initial_fish = problem.parse(input);
+        assert_eq!(problem.solve_actual(&initial_fish, 256), 26984457539);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem06::new();
+        let input = get_input!("./inputs/problem_06.txt");
+        let initial_fish = problem.parse(input);
+        assert_eq!(problem.solve_actual(&initial_fish, 256), 1592918715629);
     }
 }
