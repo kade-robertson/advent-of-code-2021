@@ -72,7 +72,7 @@ impl SignalNote {
             } else if pattern.len() == 5 {
                 // 2, 3 and 5 are the only patterns with 5 signals.
                 // 3 and 5 includes all but 1 of 4s bits, but 2 is missing 2 bits.
-                // (num | 4) == 8 should determine if it is a 2 or a (3 or 5).
+                // (num & value_of(4)) == 3 should determine if it is a (3 or 5) or a 2.
                 // Then, only 3 includes all of 1s bits, so a bitwise AND with 1 should
                 // determine if it is a 3 or a 5
                 known_values.insert(
