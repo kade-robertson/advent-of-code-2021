@@ -20,10 +20,15 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
+      - uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "America/Toronto"
+          timezoneMacos: "America/Toronto"
+          timezoneWindows: "America/Toronto"
       - name: Set outputs
         id: vars
         run: |
-          echo "::set-output name=version::$(TZ='America/Toronto' date +%Y.%m.%d-%H.%M)"
+          echo "::set-output name=version::$(date +%Y.%m.%d-%H.%M)"
           echo "::set-output name=githash::$(git rev-parse --short HEAD)"
       - name: Build
         run: |
