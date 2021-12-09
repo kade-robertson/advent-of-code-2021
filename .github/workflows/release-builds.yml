@@ -24,7 +24,7 @@ jobs:
         with:
           timezoneLinux: "America/Toronto"
           timezoneMacos: "America/Toronto"
-          timezoneWindows: "America/Toronto"
+          timezoneWindows: "Eastern Standard Time"
       - name: Set outputs
         id: vars
         run: |
