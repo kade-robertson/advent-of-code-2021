@@ -12,7 +12,8 @@ fn pattern_to_bits(pattern: &String) -> u8 {
     pattern
         .chars()
         .for_each(|c| value += 1 << (c as u32 - 'a' as u32));
-    return value;
+
+    value
 }
 
 impl SignalNote {
@@ -94,7 +95,7 @@ impl SignalNote {
         known_values.iter().for_each(|(value, pattern)| {
             solved_values.insert(*pattern, *value);
         });
-        return solved_values;
+        solved_values
     }
 
     pub fn get_value(&self) -> i64 {
@@ -103,7 +104,7 @@ impl SignalNote {
         self.output
             .iter()
             .for_each(|num| value = value * 10 + (solved_values[&pattern_to_bits(num)]));
-        return value;
+        value
     }
 }
 
@@ -126,13 +127,13 @@ impl Problem08 {
                 _ => (),
             })
         });
-        return total_easy_digits;
+        total_easy_digits
     }
 
     fn solve_actual_part2(&self, signal_notes: &Vec<SignalNote>) -> i64 {
-        return signal_notes
+        signal_notes
             .iter()
-            .fold(0, |total, note| total + note.get_value());
+            .fold(0, |total, note| total + note.get_value())
     }
 }
 
@@ -144,13 +145,13 @@ impl Problem for Problem08 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_08.txt");
         let signal_notes = self.parse(input);
-        return self.solve_actual(&signal_notes);
+        self.solve_actual(&signal_notes)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_08.txt");
         let signal_notes = self.parse(input);
-        return self.solve_actual_part2(&signal_notes);
+        self.solve_actual_part2(&signal_notes)
     }
 }
 

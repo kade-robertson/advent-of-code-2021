@@ -38,7 +38,7 @@ impl Problem06 {
             new_fish = actual_new_fish;
         }
 
-        return fish_buckets.horizontal_sum() + new_fish;
+        fish_buckets.horizontal_sum() + new_fish
     }
 
     // Original solution.
@@ -65,7 +65,7 @@ impl Problem06 {
             ];
         }
 
-        return fish_buckets.iter().sum();
+        fish_buckets.iter().sum()
     }
 }
 
@@ -77,13 +77,13 @@ impl Problem for Problem06 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_06.txt");
         let initial_fish = self.parse(input);
-        return self.solve_actual_simd(&initial_fish, 80);
+        self.solve_actual_simd(&initial_fish, 80)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_06.txt");
         let initial_fish = self.parse(input);
-        return self.solve_actual_simd(&initial_fish, 256);
+        self.solve_actual_simd(&initial_fish, 256)
     }
 }
 

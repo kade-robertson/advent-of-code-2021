@@ -49,12 +49,12 @@ impl Problem10 {
                 incomplete.push(char_stack.iter().rev().map(|c| c.to_owned()).collect());
             }
         }
-        return (score, incomplete);
+        (score, incomplete)
     }
 
     fn solve_actual(&self, navigation_subsystem: &Vec<String>) -> i64 {
         let (corrupt, _incomplete) = self.get_corrupt_and_incomplete(navigation_subsystem);
-        return corrupt;
+        corrupt
     }
 
     fn solve_actual_part2(&self, navigation_subsystem: &Vec<String>) -> i64 {
@@ -69,7 +69,7 @@ impl Problem10 {
 
         scores.sort();
 
-        return scores[scores.len() / 2];
+        scores[scores.len() / 2]
     }
 }
 
@@ -81,13 +81,13 @@ impl Problem for Problem10 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_10.txt");
         let navigation_subsystem = self.parse(input);
-        return self.solve_actual(&navigation_subsystem);
+        self.solve_actual(&navigation_subsystem)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_10.txt");
         let navigation_subsystem = self.parse(input);
-        return self.solve_actual_part2(&navigation_subsystem);
+        self.solve_actual_part2(&navigation_subsystem)
     }
 }
 

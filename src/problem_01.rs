@@ -22,7 +22,7 @@ impl Problem01 {
                 increases += 1;
             }
         }
-        return increases;
+        increases
     }
 
     fn solve_actual_part2(&self, measurements: &Vec<i64>) -> i64 {
@@ -33,7 +33,7 @@ impl Problem01 {
                 increases += 1;
             }
         }
-        return increases;
+        increases
     }
 }
 
@@ -45,13 +45,13 @@ impl Problem for Problem01 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_01.txt");
         let measurements = self.parse(input);
-        return self.solve_actual(&measurements);
+        self.solve_actual(&measurements)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_01.txt");
         let measurements = self.parse(input);
-        return self.solve_actual_part2(&measurements);
+        self.solve_actual_part2(&measurements)
     }
 }
 

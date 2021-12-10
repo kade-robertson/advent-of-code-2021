@@ -38,15 +38,15 @@ impl Problem09 {
                 basins.push((i, j));
             }
         }
-        return basins;
+        basins
     }
 
     fn solve_actual(&self, heightmap: &Vec<Vec<i64>>) -> i64 {
         let basin_centers = self.basin_centers(heightmap);
 
-        return basin_centers
+        basin_centers
             .iter()
-            .fold(0, |acc, (x, y)| acc + heightmap[*x][*y] + 1);
+            .fold(0, |acc, (x, y)| acc + heightmap[*x][*y] + 1)
     }
 
     fn basin_bfs(&self, heightmap: &Vec<Vec<i64>>, basin_center: (usize, usize)) -> i64 {
@@ -77,7 +77,7 @@ impl Problem09 {
             }
         }
 
-        return seen_pos.len() as i64;
+        seen_pos.len() as i64
     }
 
     fn solve_actual_part2(&self, heightmap: &Vec<Vec<i64>>) -> i64 {
@@ -89,7 +89,8 @@ impl Problem09 {
 
         basin_sizes.sort();
         let length = basin_sizes.len();
-        return basin_sizes[length - 1] * basin_sizes[length - 2] * basin_sizes[length - 3];
+
+        basin_sizes[length - 1] * basin_sizes[length - 2] * basin_sizes[length - 3]
     }
 }
 
@@ -101,13 +102,13 @@ impl Problem for Problem09 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_09.txt");
         let heightmap = self.parse(input);
-        return self.solve_actual(&heightmap);
+        self.solve_actual(&heightmap)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_09.txt");
         let heightmap = self.parse(input);
-        return self.solve_actual_part2(&heightmap);
+        self.solve_actual_part2(&heightmap)
     }
 }
 

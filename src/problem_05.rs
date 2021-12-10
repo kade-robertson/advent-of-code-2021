@@ -44,7 +44,7 @@ impl Line {
                 .for_each(|(x, y)| covered_points.push(Point { x, y }));
         }
 
-        return covered_points;
+        covered_points
     }
 }
 
@@ -78,7 +78,7 @@ impl Problem05 {
                 },
             });
         });
-        return submarine_lines;
+        submarine_lines
     }
 
     fn solve_actual(&self, submarine_lines: &Vec<Line>, include_diagonals: bool) -> i64 {
@@ -94,7 +94,7 @@ impl Problem05 {
                 }
             }
         });
-        return seen_at_least_twice.len() as i64;
+        seen_at_least_twice.len() as i64
     }
 }
 
@@ -106,13 +106,13 @@ impl Problem for Problem05 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = self.parse(input);
-        return self.solve_actual(&submarine_lines, false);
+        self.solve_actual(&submarine_lines, false)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = self.parse(input);
-        return self.solve_actual(&submarine_lines, true);
+        self.solve_actual(&submarine_lines, true)
     }
 }
 

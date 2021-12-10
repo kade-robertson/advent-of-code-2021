@@ -21,7 +21,7 @@ impl Problem02 {
                 amount: split[1].parse::<i64>().unwrap(),
             });
         });
-        return commands;
+        commands
     }
 
     fn solve_actual(&self, commands: &Vec<Command>) -> i64 {
@@ -35,7 +35,7 @@ impl Problem02 {
                 "up" => depth -= cmd.amount,
                 _ => (),
             });
-        return depth * distance;
+        depth * distance
     }
 
     fn solve_actual_part2(&self, commands: &Vec<Command>) -> i64 {
@@ -53,7 +53,7 @@ impl Problem02 {
                 "up" => aim -= cmd.amount,
                 _ => (),
             });
-        return depth * distance;
+        depth * distance
     }
 }
 
@@ -65,13 +65,13 @@ impl Problem for Problem02 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_02.txt");
         let commands: Vec<Command> = self.parse(input);
-        return self.solve_actual(&commands);
+        self.solve_actual(&commands)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_02.txt");
         let commands: Vec<Command> = self.parse(input);
-        return self.solve_actual_part2(&commands);
+        self.solve_actual_part2(&commands)
     }
 }
 

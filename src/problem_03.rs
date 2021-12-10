@@ -24,8 +24,7 @@ impl Problem03 {
     // - max integer value with the same number of bits is 11111
     // - 11111 - 10110 = 01001
     fn epsilon_rate(&self, size: usize, num: i64) -> i64 {
-        let max_value = 2i64.pow(size as u32) - 1;
-        return max_value - num;
+        2i64.pow(size as u32) - 1 - num
     }
 
     fn solve_actual(&self, diagnostics: &Vec<Vec<u8>>) -> i64 {
@@ -52,7 +51,8 @@ impl Problem03 {
             }
             index += 1;
         }
-        return gamma_rate * self.epsilon_rate(bits, gamma_rate);
+
+        gamma_rate * self.epsilon_rate(bits, gamma_rate)
     }
 
     fn calculate_rating(&self, values: &Vec<Vec<u8>>, invert: bool, index: usize) -> i64 {
@@ -81,7 +81,8 @@ impl Problem03 {
                 values_to_keep.push(num.to_vec());
             }
         });
-        return self.calculate_rating(&values_to_keep, invert, index + 1);
+
+        self.calculate_rating(&values_to_keep, invert, index + 1)
     }
 
     fn solve_actual_part2(&self, diagnostics: &Vec<Vec<u8>>) -> i64 {
@@ -92,7 +93,7 @@ impl Problem03 {
         let oxygen_rating = self.calculate_rating(&diagnostics, false, 0);
         let scrubber_rating = self.calculate_rating(&diagnostics, true, 0);
 
-        return oxygen_rating * scrubber_rating;
+        oxygen_rating * scrubber_rating
     }
 }
 
@@ -104,13 +105,13 @@ impl Problem for Problem03 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_03.txt");
         let diagnostics: Vec<Vec<u8>> = self.parse(input);
-        return self.solve_actual(&diagnostics);
+        self.solve_actual(&diagnostics)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_03.txt");
         let diagnostics: Vec<Vec<u8>> = self.parse(input);
-        return self.solve_actual_part2(&diagnostics);
+        self.solve_actual_part2(&diagnostics)
     }
 }
 
@@ -127,10 +128,26 @@ mod tests {
     }
 
     #[test]
+    fn test_solve_actual_from_input() {
+        let problem = Problem03::new();
+        let input = get_input!("./inputs/problem_03.txt");
+        let diagnostics: Vec<Vec<u8>> = problem.parse(input);
+        assert_eq!(problem.solve_actual(&diagnostics), 1997414);
+    }
+
+    #[test]
     fn test_solve_actual_part2_from_example() {
         let problem = Problem03::new();
         let input = get_input!("./inputs/problem_03_example.txt");
         let diagnostics: Vec<Vec<u8>> = problem.parse(input);
         assert_eq!(problem.solve_actual_part2(&diagnostics), 230);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem03::new();
+        let input = get_input!("./inputs/problem_03.txt");
+        let diagnostics: Vec<Vec<u8>> = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&diagnostics), 1032597);
     }
 }

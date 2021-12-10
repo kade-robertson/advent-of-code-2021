@@ -41,7 +41,8 @@ impl BingoBoard {
             }
             col_index += 1;
         }
-        return true;
+
+        true
     }
 
     fn check_col_solved(&self, col_index: usize) -> bool {
@@ -52,7 +53,8 @@ impl BingoBoard {
             }
             row_index += 1;
         }
-        return true;
+
+        true
     }
 
     pub fn solved(&self) -> bool {
@@ -63,7 +65,8 @@ impl BingoBoard {
             }
             index += 1;
         }
-        return false;
+
+        false
     }
 
     pub fn unmarked_total(&self) -> i64 {
@@ -73,7 +76,7 @@ impl BingoBoard {
                 total += value;
             }
         });
-        return total;
+        total
     }
 }
 
@@ -122,7 +125,7 @@ impl Problem04 {
                 .collect();
             boards.push(BingoBoard::new(&board));
         }
-        return (numbers_to_be_called, boards);
+        (numbers_to_be_called, boards)
     }
 
     fn solve_actual(&self, bingo_numbers: &Vec<i64>, bingo_boards: &mut Vec<BingoBoard>) -> i64 {
@@ -134,7 +137,8 @@ impl Problem04 {
                 }
             }
         }
-        return 0;
+
+        0
     }
 
     fn solve_actual_part2(
@@ -157,7 +161,8 @@ impl Problem04 {
                 }
             }
         }
-        return last_win;
+
+        last_win
     }
 }
 
@@ -169,13 +174,13 @@ impl Problem for Problem04 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_04.txt");
         let (bingo_numbers, mut bingo_boards) = self.parse(input);
-        return self.solve_actual(&bingo_numbers, &mut bingo_boards);
+        self.solve_actual(&bingo_numbers, &mut bingo_boards)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_04.txt");
         let (bingo_numbers, mut bingo_boards) = self.parse(input);
-        return self.solve_actual_part2(&bingo_numbers, &mut bingo_boards);
+        self.solve_actual_part2(&bingo_numbers, &mut bingo_boards)
     }
 }
 

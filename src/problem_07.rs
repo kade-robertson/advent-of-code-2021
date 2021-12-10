@@ -18,9 +18,10 @@ impl Problem07 {
         let mut positions = crab_submarines.to_owned();
         positions.sort();
         let ideal_position = positions[positions.len() / 2];
-        return positions
+
+        positions
             .iter()
-            .fold(0, |acc, crab| acc + (crab - ideal_position).abs());
+            .fold(0, |acc, crab| acc + (crab - ideal_position).abs())
     }
 
     fn triangular(&self, num: i64) -> i64 {
@@ -34,14 +35,14 @@ impl Problem07 {
         let ideal_position =
             positions.iter().fold(0, |acc, crab| acc + crab) as i64 / positions.len() as i64;
 
-        return i64::min(
+        i64::min(
             positions.iter().fold(0, |acc, crab| {
                 acc + self.triangular((crab - ideal_position).abs())
             }),
             positions.iter().fold(0, |acc, crab| {
                 acc + self.triangular((crab - ideal_position - 1).abs())
             }),
-        );
+        )
     }
 }
 
@@ -53,13 +54,13 @@ impl Problem for Problem07 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_07.txt");
         let crab_submarines = self.parse(input);
-        return self.solve_actual(&crab_submarines);
+        self.solve_actual(&crab_submarines)
     }
 
     fn solve_part2(&self) -> i64 {
         let input = get_input!("./inputs/problem_07.txt");
         let crab_submarines = self.parse(input);
-        return self.solve_actual_part2(&crab_submarines);
+        self.solve_actual_part2(&crab_submarines)
     }
 }
 
