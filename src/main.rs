@@ -34,17 +34,23 @@ fn main() {
         Box::new(problem_09::Problem09::new()),
         Box::new(problem_10::Problem10::new()),
     ];
+    let mut duration = Instant::now().elapsed();
     problems.iter().for_each(|problem| {
         println!("{}", problem.name());
+
         print!(" - Part 1: ");
         let part1_start = Instant::now();
-        println!("{} (took {:.2?})", problem.solve(), part1_start.elapsed());
+        let part1_result = problem.solve();
+        let part1_duration = part1_start.elapsed();
+        duration += part1_duration;
+        println!("{} (took {:.2?})", part1_result, part1_duration);
+
         print!(" - Part 2: ");
         let part2_start = Instant::now();
-        println!(
-            "{} (took {:.2?})",
-            problem.solve_part2(),
-            part2_start.elapsed()
-        );
+        let part2_result = problem.solve_part2();
+        let part2_duration = part2_start.elapsed();
+        duration += part2_duration;
+        println!("{} (took {:.2?})", part2_result, part2_duration);
     });
+    println!("Took a total of {:.2?}", duration);
 }
