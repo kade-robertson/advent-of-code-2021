@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
       - name: Rust Cache
         uses: Swatinem/rust-cache@v1.3.0
       - uses: actions/setup-node@v2
@@ -32,7 +32,6 @@ jobs:
           echo "::set-output name=githash::$(git rev-parse --short HEAD)"
       - name: Build
         run: |
-          rustup default nightly
           cargo install --force cargo-strip
           cargo build --release
           cargo strip
