@@ -1,5 +1,3 @@
-#![feature(portable_simd)]
-
 use std::time::Instant;
 
 use crate::problem::Problem;
