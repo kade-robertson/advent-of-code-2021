@@ -2,37 +2,11 @@ use std::collections::{HashMap, HashSet};
 
 use crate::problem::Problem;
 
-#[derive(Clone, Eq)]
-pub struct CaveNode {
-    value: u16,
-    small: bool,
-    start: bool,
-    end: bool,
-}
-
-impl CaveNode {
-    pub fn new(value: &str) -> CaveNode {
-        CaveNode {
-            value: value_as_num(value),
-            small: value.chars().all(|c| c.is_ascii_lowercase()),
-            start: value == "start".to_string(),
-            end: value == "end".to_string(),
-        }
-    }
-}
-
-impl PartialEq for CaveNode {
-    fn eq(&self, other: &Self) -> bool {
-        self.value == other.value
-    }
-}
-
-impl core::hash::Hash for CaveNode {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.value.hash(state);
-    }
-}
-
+/// Converts an input string to a nice integral value.
+///
+/// Since we know all nodes are strings of length 2, or start or end,
+/// u16 can easily hold enough info to differentiate nodes, and group
+/// them by case.
 fn value_as_num(value: &str) -> u16 {
     match value {
         "start" => u16::MIN,
@@ -42,7 +16,7 @@ fn value_as_num(value: &str) -> u16 {
                 + (c as u16 + 1
                     - match c.is_ascii_lowercase() {
                         true => 'a' as u16,
-                        false => 'A' as u16,
+                        false => 'A' as u16 - 26,
                     })
         }),
     }
@@ -55,20 +29,20 @@ impl Problem12 {
         Problem12 {}
     }
 
-    fn parse(&self, input: String) -> HashMap<CaveNode, Vec<CaveNode>> {
-        let mut edges: HashMap<CaveNode, Vec<CaveNode>> = HashMap::new();
+    fn parse(&self, input: String) -> HashMap<u16, Vec<u16>> {
+        let mut edges: HashMap<u16, Vec<u16>> = HashMap::new();
         input.lines().for_each(|line| {
             let nodes: Vec<&str> = line.split('-').collect();
-            let first = CaveNode::new(nodes[0]);
-            let second = CaveNode::new(nodes[1]);
-            if !second.start && !first.end {
+            let first = value_as_num(nodes[0]);
+            let second = value_as_num(nodes[1]);
+            if second != u16::MIN && first != u16::MAX {
                 if edges.contains_key(&first) {
                     (*edges.get_mut(&first).unwrap()).push(second.clone());
                 } else {
                     edges.insert(first.clone(), vec![second.clone()]);
                 }
             }
-            if !first.start && !second.end {
+            if first != u16::MIN && second != u16::MAX {
                 if edges.contains_key(&second) {
                     (*edges.get_mut(&second).unwrap()).push(first);
                 } else {
@@ -81,24 +55,25 @@ impl Problem12 {
 
     fn traverse_graph(
         &self,
-        cave_paths: &HashMap<CaveNode, Vec<CaveNode>>,
-        current_node: &CaveNode,
+        cave_paths: &HashMap<u16, Vec<u16>>,
+        current_node: u16,
         seen_lowercase_nodes: HashSet<&u16>,
         had_duplicate_yet: bool,
     ) -> i64 {
         let mut seen_lowercase = seen_lowercase_nodes.clone();
         let mut paths = 0;
-        if current_node.small {
-            seen_lowercase.insert(&current_node.value);
+        /* value of zz from value_as_num */
+        if current_node > u16::MIN && current_node <= 6682 {
+            seen_lowercase.insert(&current_node);
         }
-        for node in &cave_paths[current_node] {
-            let seen = seen_lowercase.contains(&node.value);
-            if node.end {
+        for node in &cave_paths[&current_node] {
+            let seen = seen_lowercase.contains(node);
+            if node == &u16::MAX {
                 paths += 1;
             } else if !seen || !had_duplicate_yet {
                 paths += self.traverse_graph(
                     cave_paths,
-                    node,
+                    *node,
                     seen_lowercase.clone(),
                     seen || had_duplicate_yet,
                 );
@@ -107,22 +82,12 @@ impl Problem12 {
         paths
     }
 
-    fn solve_actual(&self, cave_paths: &HashMap<CaveNode, Vec<CaveNode>>) -> i64 {
-        let start = cave_paths
-            .iter()
-            .find(|(node, _edges)| node.start)
-            .unwrap()
-            .0;
-        self.traverse_graph(cave_paths, start, HashSet::new(), true)
+    fn solve_actual(&self, cave_paths: &HashMap<u16, Vec<u16>>) -> i64 {
+        self.traverse_graph(cave_paths, u16::MIN, HashSet::new(), true)
     }
 
-    fn solve_actual_part2(&self, cave_paths: &HashMap<CaveNode, Vec<CaveNode>>) -> i64 {
-        let start = cave_paths
-            .iter()
-            .find(|(node, _edges)| node.start)
-            .unwrap()
-            .0;
-        self.traverse_graph(cave_paths, start, HashSet::new(), false)
+    fn solve_actual_part2(&self, cave_paths: &HashMap<u16, Vec<u16>>) -> i64 {
+        self.traverse_graph(cave_paths, u16::MIN, HashSet::new(), false)
     }
 }
 
