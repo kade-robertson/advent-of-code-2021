@@ -40,21 +40,21 @@ impl Problem12 {
         Problem12 {}
     }
 
-    fn parse(&self, input: String) -> HashMap<CaveNode, HashSet<CaveNode>> {
-        let mut edges: HashMap<CaveNode, HashSet<CaveNode>> = HashMap::new();
+    fn parse(&self, input: String) -> HashMap<CaveNode, Vec<CaveNode>> {
+        let mut edges: HashMap<CaveNode, Vec<CaveNode>> = HashMap::new();
         input.lines().for_each(|line| {
             let nodes: Vec<&str> = line.split('-').collect();
             let start = CaveNode::new(nodes[0].to_string());
             let end = CaveNode::new(nodes[1].to_string());
             if edges.contains_key(&start) {
-                (*edges.get_mut(&start).unwrap()).insert(end.clone());
+                (*edges.get_mut(&start).unwrap()).push(end.clone());
             } else {
-                edges.insert(start.clone(), HashSet::from_iter([end.clone()]));
+                edges.insert(start.clone(), vec![end.clone()]);
             }
             if edges.contains_key(&end) {
-                (*edges.get_mut(&end).unwrap()).insert(start);
+                (*edges.get_mut(&end).unwrap()).push(start);
             } else {
-                edges.insert(end, HashSet::from_iter([start]));
+                edges.insert(end, vec![start]);
             }
         });
         edges
@@ -62,7 +62,7 @@ impl Problem12 {
 
     fn traverse_graph(
         &self,
-        cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>,
+        cave_paths: &HashMap<CaveNode, Vec<CaveNode>>,
         current_node: &CaveNode,
         seen_lowercase_nodes: HashSet<&String>,
         had_duplicate_yet: bool,
@@ -90,7 +90,7 @@ impl Problem12 {
         paths
     }
 
-    fn solve_actual(&self, cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>) -> i64 {
+    fn solve_actual(&self, cave_paths: &HashMap<CaveNode, Vec<CaveNode>>) -> i64 {
         let start = cave_paths
             .iter()
             .find(|(node, _edges)| node.start)
@@ -99,7 +99,7 @@ impl Problem12 {
         self.traverse_graph(cave_paths, start, HashSet::new(), true)
     }
 
-    fn solve_actual_part2(&self, cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>) -> i64 {
+    fn solve_actual_part2(&self, cave_paths: &HashMap<CaveNode, Vec<CaveNode>>) -> i64 {
         let start = cave_paths
             .iter()
             .find(|(node, _edges)| node.start)
