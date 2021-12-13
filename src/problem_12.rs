@@ -2,6 +2,37 @@ use std::collections::{HashMap, HashSet};
 
 use crate::problem::Problem;
 
+#[derive(Clone, Eq)]
+pub struct CaveNode {
+    value: String,
+    small: bool,
+    start: bool,
+    end: bool,
+}
+
+impl CaveNode {
+    pub fn new(value: String) -> CaveNode {
+        CaveNode {
+            value: value.clone(),
+            small: value.chars().all(|c| c.is_ascii_lowercase()),
+            start: value == "start".to_string(),
+            end: value == "end".to_string(),
+        }
+    }
+}
+
+impl PartialEq for CaveNode {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
+    }
+}
+
+impl core::hash::Hash for CaveNode {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.value.hash(state);
+    }
+}
+
 pub struct Problem12 {}
 
 impl Problem12 {
@@ -9,12 +40,12 @@ impl Problem12 {
         Problem12 {}
     }
 
-    fn parse(&self, input: String) -> HashMap<String, HashSet<String>> {
-        let mut edges: HashMap<String, HashSet<String>> = HashMap::new();
+    fn parse(&self, input: String) -> HashMap<CaveNode, HashSet<CaveNode>> {
+        let mut edges: HashMap<CaveNode, HashSet<CaveNode>> = HashMap::new();
         input.lines().for_each(|line| {
             let nodes: Vec<&str> = line.split('-').collect();
-            let start = nodes[0].to_string();
-            let end = nodes[1].to_string();
+            let start = CaveNode::new(nodes[0].to_string());
+            let end = CaveNode::new(nodes[1].to_string());
             if edges.contains_key(&start) {
                 (*edges.get_mut(&start).unwrap()).insert(end.clone());
             } else {
@@ -31,44 +62,23 @@ impl Problem12 {
 
     fn traverse_graph(
         &self,
-        cave_paths: &HashMap<String, HashSet<String>>,
-        current_node: &String,
-        seen_lowercase_nodes: HashSet<&String>,
-    ) -> i64 {
-        let mut seen_lowercase = seen_lowercase_nodes.clone();
-        let mut paths = 0;
-        if current_node.chars().all(|c| c.is_ascii_lowercase()) {
-            seen_lowercase.insert(current_node);
-        }
-        for node in &cave_paths[current_node] {
-            if *node == "end".to_string() {
-                paths += 1;
-            } else if !seen_lowercase.contains(node) {
-                paths += self.traverse_graph(cave_paths, node, seen_lowercase.clone());
-            }
-        }
-        paths
-    }
-
-    fn traverse_graph_part2(
-        &self,
-        cave_paths: &HashMap<String, HashSet<String>>,
-        current_node: &String,
-        seen_lowercase_nodes: HashSet<&String>,
+        cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>,
+        current_node: &CaveNode,
+        seen_lowercase_nodes: HashSet<&CaveNode>,
         had_duplicate_yet: bool,
     ) -> i64 {
         let mut seen_lowercase = seen_lowercase_nodes.clone();
         let mut paths = 0;
-        if current_node.chars().all(|c| c.is_ascii_lowercase()) {
+        if current_node.small {
             seen_lowercase.insert(current_node);
         }
         for node in &cave_paths[current_node] {
-            if *node == "end".to_string() {
+            if node.end {
                 paths += 1;
-            } else if *node == "start".to_string() {
+            } else if node.start {
                 continue;
             } else if !seen_lowercase.contains(node) || !had_duplicate_yet {
-                paths += self.traverse_graph_part2(
+                paths += self.traverse_graph(
                     cave_paths,
                     node,
                     seen_lowercase.clone(),
@@ -79,14 +89,22 @@ impl Problem12 {
         paths
     }
 
-    fn solve_actual(&self, cave_paths: &HashMap<String, HashSet<String>>) -> i64 {
-        let start = "start".to_string();
-        self.traverse_graph(cave_paths, &start, HashSet::from_iter([&start]))
+    fn solve_actual(&self, cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>) -> i64 {
+        let start = cave_paths
+            .iter()
+            .find(|(node, _edges)| node.start)
+            .unwrap()
+            .0;
+        self.traverse_graph(cave_paths, start, HashSet::new(), true)
     }
 
-    fn solve_actual_part2(&self, cave_paths: &HashMap<String, HashSet<String>>) -> i64 {
-        let start = "start".to_string();
-        self.traverse_graph_part2(cave_paths, &start, HashSet::from_iter([&start]), false)
+    fn solve_actual_part2(&self, cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>) -> i64 {
+        let start = cave_paths
+            .iter()
+            .find(|(node, _edges)| node.start)
+            .unwrap()
+            .0;
+        self.traverse_graph(cave_paths, start, HashSet::new(), false)
     }
 }
 
