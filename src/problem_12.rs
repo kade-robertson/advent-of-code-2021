@@ -4,16 +4,16 @@ use crate::problem::Problem;
 
 #[derive(Clone, Eq)]
 pub struct CaveNode {
-    value: String,
+    value: u16,
     small: bool,
     start: bool,
     end: bool,
 }
 
 impl CaveNode {
-    pub fn new(value: String) -> CaveNode {
+    pub fn new(value: &str) -> CaveNode {
         CaveNode {
-            value: value.clone(),
+            value: value_as_num(value),
             small: value.chars().all(|c| c.is_ascii_lowercase()),
             start: value == "start".to_string(),
             end: value == "end".to_string(),
@@ -33,6 +33,21 @@ impl core::hash::Hash for CaveNode {
     }
 }
 
+fn value_as_num(value: &str) -> u16 {
+    match value {
+        "start" => u16::MIN,
+        "end" => u16::MAX,
+        _ => value.chars().fold(0, |acc, c| {
+            (acc << 8)
+                + (c as u16 + 1
+                    - match c.is_ascii_lowercase() {
+                        true => 'a' as u16,
+                        false => 'A' as u16,
+                    })
+        }),
+    }
+}
+
 pub struct Problem12 {}
 
 impl Problem12 {
@@ -44,8 +59,8 @@ impl Problem12 {
         let mut edges: HashMap<CaveNode, Vec<CaveNode>> = HashMap::new();
         input.lines().for_each(|line| {
             let nodes: Vec<&str> = line.split('-').collect();
-            let start = CaveNode::new(nodes[0].to_string());
-            let end = CaveNode::new(nodes[1].to_string());
+            let start = CaveNode::new(nodes[0]);
+            let end = CaveNode::new(nodes[1]);
             if edges.contains_key(&start) {
                 (*edges.get_mut(&start).unwrap()).push(end.clone());
             } else {
@@ -64,7 +79,7 @@ impl Problem12 {
         &self,
         cave_paths: &HashMap<CaveNode, Vec<CaveNode>>,
         current_node: &CaveNode,
-        seen_lowercase_nodes: HashSet<&String>,
+        seen_lowercase_nodes: HashSet<&u16>,
         had_duplicate_yet: bool,
     ) -> i64 {
         let mut seen_lowercase = seen_lowercase_nodes.clone();
