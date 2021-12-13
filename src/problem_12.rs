@@ -59,17 +59,21 @@ impl Problem12 {
         let mut edges: HashMap<CaveNode, Vec<CaveNode>> = HashMap::new();
         input.lines().for_each(|line| {
             let nodes: Vec<&str> = line.split('-').collect();
-            let start = CaveNode::new(nodes[0]);
-            let end = CaveNode::new(nodes[1]);
-            if edges.contains_key(&start) {
-                (*edges.get_mut(&start).unwrap()).push(end.clone());
-            } else {
-                edges.insert(start.clone(), vec![end.clone()]);
+            let first = CaveNode::new(nodes[0]);
+            let second = CaveNode::new(nodes[1]);
+            if !second.start && !first.end {
+                if edges.contains_key(&first) {
+                    (*edges.get_mut(&first).unwrap()).push(second.clone());
+                } else {
+                    edges.insert(first.clone(), vec![second.clone()]);
+                }
             }
-            if edges.contains_key(&end) {
-                (*edges.get_mut(&end).unwrap()).push(start);
-            } else {
-                edges.insert(end, vec![start]);
+            if !first.start && !second.end {
+                if edges.contains_key(&second) {
+                    (*edges.get_mut(&second).unwrap()).push(first);
+                } else {
+                    edges.insert(second, vec![first]);
+                }
             }
         });
         edges
@@ -91,8 +95,6 @@ impl Problem12 {
             let seen = seen_lowercase.contains(&node.value);
             if node.end {
                 paths += 1;
-            } else if node.start {
-                continue;
             } else if !seen || !had_duplicate_yet {
                 paths += self.traverse_graph(
                     cave_paths,
