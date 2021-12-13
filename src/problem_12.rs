@@ -50,9 +50,43 @@ impl Problem12 {
         paths
     }
 
+    fn traverse_graph_part2(
+        &self,
+        cave_paths: &HashMap<String, HashSet<String>>,
+        current_node: &String,
+        seen_lowercase_nodes: HashSet<&String>,
+        had_duplicate_yet: bool,
+    ) -> i64 {
+        let mut seen_lowercase = seen_lowercase_nodes.clone();
+        let mut paths = 0;
+        if current_node.chars().all(|c| c.is_ascii_lowercase()) {
+            seen_lowercase.insert(current_node);
+        }
+        for node in &cave_paths[current_node] {
+            if *node == "end".to_string() {
+                paths += 1;
+            } else if *node == "start".to_string() {
+                continue;
+            } else if !seen_lowercase.contains(node) || !had_duplicate_yet {
+                paths += self.traverse_graph_part2(
+                    cave_paths,
+                    node,
+                    seen_lowercase.clone(),
+                    seen_lowercase.contains(node) || had_duplicate_yet,
+                );
+            }
+        }
+        paths
+    }
+
     fn solve_actual(&self, cave_paths: &HashMap<String, HashSet<String>>) -> i64 {
         let start = "start".to_string();
         self.traverse_graph(cave_paths, &start, HashSet::from_iter([&start]))
+    }
+
+    fn solve_actual_part2(&self, cave_paths: &HashMap<String, HashSet<String>>) -> i64 {
+        let start = "start".to_string();
+        self.traverse_graph_part2(cave_paths, &start, HashSet::from_iter([&start]), false)
     }
 }
 
@@ -68,7 +102,9 @@ impl Problem for Problem12 {
     }
 
     fn solve_part2(&self) -> i64 {
-        0
+        let input = get_input!("./inputs/problem_12.txt");
+        let cave_paths = self.parse(input);
+        self.solve_actual_part2(&cave_paths)
     }
 }
 
@@ -106,5 +142,37 @@ mod tests {
         let input = get_input!("./inputs/problem_12.txt");
         let cave_paths = problem.parse(input);
         assert_eq!(problem.solve_actual(&cave_paths), 4186);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_01() {
+        let problem = Problem12::new();
+        let input = get_input!("./inputs/problem_12_example_01.txt");
+        let cave_paths = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&cave_paths), 36);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_02() {
+        let problem = Problem12::new();
+        let input = get_input!("./inputs/problem_12_example_02.txt");
+        let cave_paths = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&cave_paths), 103);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_03() {
+        let problem = Problem12::new();
+        let input = get_input!("./inputs/problem_12_example_03.txt");
+        let cave_paths = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&cave_paths), 3509);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem12::new();
+        let input = get_input!("./inputs/problem_12.txt");
+        let cave_paths = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&cave_paths), 92111);
     }
 }
