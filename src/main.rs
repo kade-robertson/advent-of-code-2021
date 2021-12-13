@@ -55,6 +55,10 @@ fn main() {
         let part2_duration = part2_start.elapsed();
         duration += part2_duration;
         println!("{} (took {:.2?})", part2_result.0, part2_duration);
+        match part2_result.1 {
+            Some(additional) => println!("{}", additional),
+            None => (),
+        }
     });
     println!("Took a total of {:.2?}", duration);
 }
