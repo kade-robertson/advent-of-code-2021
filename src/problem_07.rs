@@ -57,10 +57,10 @@ impl Problem for Problem07 {
         self.solve_actual(&crab_submarines)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_07.txt");
         let crab_submarines = self.parse(input);
-        self.solve_actual_part2(&crab_submarines)
+        (self.solve_actual_part2(&crab_submarines), None)
     }
 }
 

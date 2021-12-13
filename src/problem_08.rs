@@ -148,10 +148,10 @@ impl Problem for Problem08 {
         self.solve_actual(&signal_notes)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_08.txt");
         let signal_notes = self.parse(input);
-        self.solve_actual_part2(&signal_notes)
+        (self.solve_actual_part2(&signal_notes), None)
     }
 }
 

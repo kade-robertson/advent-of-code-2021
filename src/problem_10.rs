@@ -84,10 +84,10 @@ impl Problem for Problem10 {
         self.solve_actual(&navigation_subsystem)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_10.txt");
         let navigation_subsystem = self.parse(input);
-        self.solve_actual_part2(&navigation_subsystem)
+        (self.solve_actual_part2(&navigation_subsystem), None)
     }
 }
 

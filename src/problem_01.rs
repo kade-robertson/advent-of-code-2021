@@ -48,10 +48,10 @@ impl Problem for Problem01 {
         self.solve_actual(&measurements)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_01.txt");
         let measurements = self.parse(input);
-        self.solve_actual_part2(&measurements)
+        (self.solve_actual_part2(&measurements), None)
     }
 }
 

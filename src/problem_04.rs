@@ -177,10 +177,13 @@ impl Problem for Problem04 {
         self.solve_actual(&bingo_numbers, &mut bingo_boards)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_04.txt");
         let (bingo_numbers, mut bingo_boards) = self.parse(input);
-        self.solve_actual_part2(&bingo_numbers, &mut bingo_boards)
+        (
+            self.solve_actual_part2(&bingo_numbers, &mut bingo_boards),
+            None,
+        )
     }
 }
 

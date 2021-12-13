@@ -54,7 +54,7 @@ fn main() {
         let part2_result = problem.solve_part2();
         let part2_duration = part2_start.elapsed();
         duration += part2_duration;
-        println!("{} (took {:.2?})", part2_result, part2_duration);
+        println!("{} (took {:.2?})", part2_result.0, part2_duration);
     });
     println!("Took a total of {:.2?}", duration);
 }

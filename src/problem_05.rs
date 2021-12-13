@@ -109,10 +109,10 @@ impl Problem for Problem05 {
         self.solve_actual(&submarine_lines, false) as i64
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = self.parse(input);
-        self.solve_actual(&submarine_lines, true) as i64
+        (self.solve_actual(&submarine_lines, true) as i64, None)
     }
 }
 

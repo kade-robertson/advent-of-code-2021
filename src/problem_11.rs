@@ -107,10 +107,10 @@ impl Problem for Problem11 {
         self.solve_actual(&mut octopus_grid, 100)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_11.txt");
         let mut octopus_grid = self.parse(input);
-        self.solve_actual_part2(&mut octopus_grid)
+        (self.solve_actual_part2(&mut octopus_grid), None)
     }
 }
 

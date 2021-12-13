@@ -109,10 +109,10 @@ impl Problem for Problem12 {
         self.solve_actual(&cave_paths)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_12.txt");
         let cave_paths = self.parse(input);
-        self.solve_actual_part2(&cave_paths)
+        (self.solve_actual_part2(&cave_paths), None)
     }
 }
 

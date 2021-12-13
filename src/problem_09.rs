@@ -105,10 +105,10 @@ impl Problem for Problem09 {
         self.solve_actual(&heightmap)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_09.txt");
         let heightmap = self.parse(input);
-        self.solve_actual_part2(&heightmap)
+        (self.solve_actual_part2(&heightmap), None)
     }
 }
 

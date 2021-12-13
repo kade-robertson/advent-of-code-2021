@@ -108,10 +108,10 @@ impl Problem for Problem03 {
         self.solve_actual(&diagnostics)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_03.txt");
         let diagnostics: Vec<Vec<u8>> = self.parse(input);
-        self.solve_actual_part2(&diagnostics)
+        (self.solve_actual_part2(&diagnostics), None)
     }
 }
 

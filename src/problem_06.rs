@@ -48,10 +48,10 @@ impl Problem for Problem06 {
         self.solve_actual(&initial_fish, 80)
     }
 
-    fn solve_part2(&self) -> i64 {
+    fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_06.txt");
         let initial_fish = self.parse(input);
-        self.solve_actual(&initial_fish, 256)
+        (self.solve_actual(&initial_fish, 256), None)
     }
 }
 
