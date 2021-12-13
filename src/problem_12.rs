@@ -64,25 +64,26 @@ impl Problem12 {
         &self,
         cave_paths: &HashMap<CaveNode, HashSet<CaveNode>>,
         current_node: &CaveNode,
-        seen_lowercase_nodes: HashSet<&CaveNode>,
+        seen_lowercase_nodes: HashSet<&String>,
         had_duplicate_yet: bool,
     ) -> i64 {
         let mut seen_lowercase = seen_lowercase_nodes.clone();
         let mut paths = 0;
         if current_node.small {
-            seen_lowercase.insert(current_node);
+            seen_lowercase.insert(&current_node.value);
         }
         for node in &cave_paths[current_node] {
+            let seen = seen_lowercase.contains(&node.value);
             if node.end {
                 paths += 1;
             } else if node.start {
                 continue;
-            } else if !seen_lowercase.contains(node) || !had_duplicate_yet {
+            } else if !seen || !had_duplicate_yet {
                 paths += self.traverse_graph(
                     cave_paths,
                     node,
                     seen_lowercase.clone(),
-                    seen_lowercase.contains(node) || had_duplicate_yet,
+                    seen || had_duplicate_yet,
                 );
             }
         }
