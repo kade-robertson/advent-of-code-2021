@@ -11,14 +11,21 @@ fn value_as_num(value: &str) -> u16 {
     match value {
         "start" => u16::MIN,
         "end" => u16::MAX,
-        _ => value.chars().fold(0, |acc, c| {
-            (acc << 8)
-                + (c as u16 + 1
-                    - match c.is_ascii_lowercase() {
-                        true => 'a' as u16,
-                        false => 'A' as u16 - 26,
-                    })
-        }),
+        _ => {
+            let computed = value.chars().fold(0, |acc, c| {
+                (acc << 8)
+                    + (c as u16 + 1
+                        - match c.is_ascii_lowercase() {
+                            true => 'a' as u16,
+                            false => 'A' as u16 - 26,
+                        })
+            });
+            if computed <= 52 {
+                computed << 8
+            } else {
+                computed
+            }
+        }
     }
 }
 
