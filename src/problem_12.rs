@@ -63,38 +63,36 @@ impl Problem12 {
     fn traverse_graph(
         &self,
         cave_paths: &HashMap<u16, Vec<u16>>,
-        current_node: u16,
-        seen_lowercase_nodes: HashSet<&u16>,
-        had_duplicate_yet: bool,
+        prevent_duplicate_small_node: bool,
     ) -> i64 {
-        let mut seen_lowercase = seen_lowercase_nodes.clone();
         let mut paths = 0;
-        /* value of zz from value_as_num */
-        if current_node > u16::MIN && current_node <= 6682 {
-            seen_lowercase.insert(&current_node);
-        }
-        for node in &cave_paths[&current_node] {
-            let seen = seen_lowercase.contains(node);
-            if node == &u16::MAX {
-                paths += 1;
-            } else if !seen || !had_duplicate_yet {
-                paths += self.traverse_graph(
-                    cave_paths,
-                    *node,
-                    seen_lowercase.clone(),
-                    seen || had_duplicate_yet,
-                );
+        let mut states_to_check: Vec<(u16, HashSet<u16>, bool)> = Vec::new();
+        states_to_check.push((0, HashSet::new(), prevent_duplicate_small_node));
+
+        while states_to_check.len() > 0 {
+            let (current_node, mut seen_nodes, had_duplicate) = states_to_check.pop().unwrap();
+            /* value of zz from value_as_num */
+            if current_node > u16::MIN && current_node <= 6682 {
+                seen_nodes.insert(current_node.clone());
+            }
+            for node in &cave_paths[&current_node] {
+                let seen = seen_nodes.contains(node);
+                if node == &u16::MAX {
+                    paths += 1;
+                } else if !seen || !had_duplicate {
+                    states_to_check.push((*node, seen_nodes.clone(), seen || had_duplicate));
+                }
             }
         }
         paths
     }
 
     fn solve_actual(&self, cave_paths: &HashMap<u16, Vec<u16>>) -> i64 {
-        self.traverse_graph(cave_paths, u16::MIN, HashSet::new(), true)
+        self.traverse_graph(cave_paths, true)
     }
 
     fn solve_actual_part2(&self, cave_paths: &HashMap<u16, Vec<u16>>) -> i64 {
-        self.traverse_graph(cave_paths, u16::MIN, HashSet::new(), false)
+        self.traverse_graph(cave_paths, false)
     }
 }
 
