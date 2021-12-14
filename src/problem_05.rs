@@ -3,13 +3,13 @@ use std::collections::HashSet;
 use crate::problem::Problem;
 
 pub struct Point {
-    x: u16,
-    y: u16,
+    x: u32,
+    y: u32,
 }
 
 impl Point {
-    pub fn as_tuple(&self) -> (u16, u16) {
-        (self.x, self.y)
+    pub fn as_hash(&self) -> u32 {
+        (self.x << 16) + self.y
     }
 }
 
@@ -22,13 +22,13 @@ impl Line {
     pub fn get_points(&self, include_diagonals: bool) -> Vec<Point> {
         let mut covered_points: Vec<Point> = Vec::new();
 
-        let x_range: Box<dyn Iterator<Item = u16>> = if self.end.x > self.start.x {
+        let x_range: Box<dyn Iterator<Item = u32>> = if self.end.x > self.start.x {
             Box::new(self.start.x..=self.end.x)
         } else {
             Box::new((self.end.x..=self.start.x).rev())
         };
 
-        let y_range: Box<dyn Iterator<Item = u16>> = if self.end.y > self.start.y {
+        let y_range: Box<dyn Iterator<Item = u32>> = if self.end.y > self.start.y {
             Box::new(self.start.y..=self.end.y)
         } else {
             Box::new((self.end.y..=self.start.y).rev())
@@ -59,13 +59,13 @@ impl Problem05 {
         let mut submarine_lines: Vec<Line> = Vec::new();
         input.lines().for_each(|line| {
             let point_strs: Vec<&str> = line.split(" -> ").collect();
-            let start_pt: Vec<u16> = point_strs[0]
+            let start_pt: Vec<u32> = point_strs[0]
                 .split(",")
-                .map(|num| num.parse::<u16>().unwrap())
+                .map(|num| num.parse::<u32>().unwrap())
                 .collect();
-            let end_pt: Vec<u16> = point_strs[1]
+            let end_pt: Vec<u32> = point_strs[1]
                 .split(",")
-                .map(|num| num.parse::<u16>().unwrap())
+                .map(|num| num.parse::<u32>().unwrap())
                 .collect();
             submarine_lines.push(Line {
                 start: Point {
@@ -81,12 +81,12 @@ impl Problem05 {
         submarine_lines
     }
 
-    fn solve_actual(&self, submarine_lines: &Vec<Line>, include_diagonals: bool) -> u16 {
-        let mut seen_once: HashSet<(u16, u16)> = HashSet::new();
-        let mut seen_at_least_twice: HashSet<(u16, u16)> = HashSet::new();
+    fn solve_actual(&self, submarine_lines: &Vec<Line>, include_diagonals: bool) -> i64 {
+        let mut seen_once: HashSet<u32> = HashSet::new();
+        let mut seen_at_least_twice: HashSet<u32> = HashSet::new();
         submarine_lines.iter().for_each(|line| {
             for point in line.get_points(include_diagonals) {
-                let coords = point.as_tuple();
+                let coords = point.as_hash();
                 if seen_once.contains(&coords) {
                     seen_at_least_twice.insert(coords);
                 } else {
@@ -94,7 +94,7 @@ impl Problem05 {
                 }
             }
         });
-        seen_at_least_twice.len() as u16
+        seen_at_least_twice.len() as i64
     }
 }
 
@@ -106,13 +106,13 @@ impl Problem for Problem05 {
     fn solve(&self) -> i64 {
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = self.parse(input);
-        self.solve_actual(&submarine_lines, false) as i64
+        self.solve_actual(&submarine_lines, false)
     }
 
     fn solve_part2(&self) -> (i64, Option<String>) {
         let input = get_input!("./inputs/problem_05.txt");
         let submarine_lines = self.parse(input);
-        (self.solve_actual(&submarine_lines, true) as i64, None)
+        (self.solve_actual(&submarine_lines, true), None)
     }
 }
 
