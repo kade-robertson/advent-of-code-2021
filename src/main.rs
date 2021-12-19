@@ -19,6 +19,7 @@ mod problem_11;
 mod problem_12;
 mod problem_13;
 mod problem_14;
+mod problem_15;
 mod util;
 
 fn main() {
@@ -39,6 +40,7 @@ fn main() {
         Box::new(problem_12::Problem12::new()),
         Box::new(problem_13::Problem13::new()),
         Box::new(problem_14::Problem14::new()),
+        Box::new(problem_15::Problem15::new()),
     ];
     let mut duration = Instant::now().elapsed();
     problems.iter().for_each(|problem| {
