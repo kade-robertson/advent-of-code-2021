@@ -16,6 +16,28 @@ impl Packet {
                 .iter()
                 .fold(0, |acc, p| acc + p.sum_versions())
     }
+
+    pub fn evaluate(&self) -> i64 {
+        match self.type_id {
+            0 => self.subpackets.iter().fold(0, |acc, p| acc + p.evaluate()),
+            1 => self.subpackets.iter().fold(1, |acc, p| acc * p.evaluate()),
+            2 => self.subpackets.iter().map(|p| p.evaluate()).min().unwrap(),
+            3 => self.subpackets.iter().map(|p| p.evaluate()).max().unwrap(),
+            4 => self.value as i64,
+            5 => match self.subpackets[0].evaluate() > self.subpackets[1].evaluate() {
+                true => 1,
+                false => 0,
+            },
+            6 => match self.subpackets[0].evaluate() < self.subpackets[1].evaluate() {
+                true => 1,
+                false => 0,
+            },
+            _ => match self.subpackets[0].evaluate() == self.subpackets[1].evaluate() {
+                true => 1,
+                false => 0,
+            },
+        }
+    }
 }
 
 fn parse_packet(packet: &Vec<u8>, packet_limit: usize, bit_limit: usize) -> (Vec<Packet>, usize) {
@@ -118,6 +140,11 @@ impl Problem16 {
         let parsed_packet = &parse_packet(packet, 0, 0).0[0];
         parsed_packet.sum_versions()
     }
+
+    fn solve_actual_part2(&self, packet: &Vec<u8>) -> i64 {
+        let parsed_packet = &parse_packet(packet, 0, 0).0[0];
+        parsed_packet.evaluate()
+    }
 }
 
 impl Problem for Problem16 {
@@ -132,7 +159,9 @@ impl Problem for Problem16 {
     }
 
     fn solve_part2(&self) -> (i64, Option<String>) {
-        (0, None)
+        let input = get_input!("./inputs/problem_16.txt");
+        let packet = self.parse(input);
+        (self.solve_actual_part2(&packet), None)
     }
 }
 
@@ -194,5 +223,45 @@ mod tests {
         let input = get_input!("./inputs/problem_16_example_07.txt");
         let packet = problem.parse(input);
         assert_eq!(problem.solve_actual(&packet), 31);
+    }
+
+    #[test]
+    fn test_solve_actual_from_input() {
+        let problem = Problem16::new();
+        let input = get_input!("./inputs/problem_16.txt");
+        let packet = problem.parse(input);
+        assert_eq!(problem.solve_actual(&packet), 879);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_08() {
+        let problem = Problem16::new();
+        let input = get_input!("./inputs/problem_16_example_08.txt");
+        let packet = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&packet), 3);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_09() {
+        let problem = Problem16::new();
+        let input = get_input!("./inputs/problem_16_example_09.txt");
+        let packet = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&packet), 9);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example_10() {
+        let problem = Problem16::new();
+        let input = get_input!("./inputs/problem_16_example_10.txt");
+        let packet = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&packet), 1);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem16::new();
+        let input = get_input!("./inputs/problem_16.txt");
+        let packet = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&packet), 539051801941);
     }
 }
