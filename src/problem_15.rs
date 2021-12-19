@@ -43,8 +43,29 @@ impl Problem15 {
         grid
     }
 
-    fn solve_actual(&self, risk_levels: &Vec<Vec<i64>>) -> i64 {
-        let mut visited = HashSet::new();
+    fn expand_grid(&self, risk_levels: &Vec<Vec<i64>>) -> Vec<Vec<i64>> {
+        let mut new_grid = vec![vec![-1; risk_levels.len() * 5]; risk_levels.len() * 5];
+
+        for row in 0..risk_levels.len() {
+            for col in 0..risk_levels.len() {
+                for nrow in 0..5usize {
+                    for ncol in 0..5usize {
+                        let new_risk = risk_levels[row][col] + nrow as i64 + ncol as i64;
+                        new_grid[(nrow * risk_levels.len()) + row]
+                            [(ncol * risk_levels.len()) + col] = match new_risk > 9 {
+                            true => new_risk % 10 + 1,
+                            false => new_risk,
+                        }
+                    }
+                }
+            }
+        }
+
+        new_grid
+    }
+
+    fn get_lowest_risk_cost(&self, risk_levels: &Vec<Vec<i64>>) -> i64 {
+        let mut visited: HashSet<usize> = HashSet::new();
         let mut estimated_costs: Vec<Vec<i64>> =
             vec![vec![i64::MAX; risk_levels.len()]; risk_levels.len()];
         estimated_costs[0][0] = 0;
@@ -54,10 +75,11 @@ impl Problem15 {
         to_visit.push((Reverse(0), 0, 0));
 
         while let Some((_score, row, col)) = to_visit.pop() {
-            visited.insert((row, col));
+            visited.insert(row * risk_levels.len() + col);
 
             for (nrow, ncol) in neighbors(row, col, risk_levels.len()) {
-                if visited.contains(&(nrow, ncol)) {
+                let poshash = nrow * risk_levels.len() + ncol;
+                if visited.contains(&poshash) {
                     continue;
                 }
                 let new_cost = estimated_costs[row][col] + risk_levels[nrow][ncol];
@@ -69,6 +91,14 @@ impl Problem15 {
         }
 
         estimated_costs[risk_levels.len() - 1][risk_levels.len() - 1]
+    }
+
+    fn solve_actual(&self, risk_levels: &Vec<Vec<i64>>) -> i64 {
+        self.get_lowest_risk_cost(risk_levels)
+    }
+
+    fn solve_actual_part2(&self, risk_levels: &Vec<Vec<i64>>) -> i64 {
+        self.get_lowest_risk_cost(&self.expand_grid(risk_levels))
     }
 }
 
@@ -84,7 +114,9 @@ impl Problem for Problem15 {
     }
 
     fn solve_part2(&self) -> (i64, Option<String>) {
-        (0, None)
+        let input = get_input!("./inputs/problem_15.txt");
+        let risk_levels = self.parse(input);
+        (self.solve_actual_part2(&risk_levels), None)
     }
 }
 
@@ -106,5 +138,21 @@ mod tests {
         let input = get_input!("./inputs/problem_15.txt");
         let risk_levels = problem.parse(input);
         assert_eq!(problem.solve_actual(&risk_levels), 503);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_example() {
+        let problem = Problem15::new();
+        let input = get_input!("./inputs/problem_15_example.txt");
+        let risk_levels = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&risk_levels), 315);
+    }
+
+    #[test]
+    fn test_solve_actual_part2_from_input() {
+        let problem = Problem15::new();
+        let input = get_input!("./inputs/problem_15.txt");
+        let risk_levels = problem.parse(input);
+        assert_eq!(problem.solve_actual_part2(&risk_levels), 2853);
     }
 }
